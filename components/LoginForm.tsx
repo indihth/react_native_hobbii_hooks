@@ -26,11 +26,10 @@ export default function LoginForm() {
   };
 
   const handlePress = (e: any) => {
-    console.log("clickeded");
 
     axios
-      .post("https://hobbii-hooks.vercel.app/api/users/login", {
-        // can send 'form' or use an object for customisation
+      .post(`${API_URL}/users/login`, {
+        // can send entire 'form' or use an object for customisation
         email: form.email,
         password: form.password,
         // Can explude fields that shouldn't be sent to server
