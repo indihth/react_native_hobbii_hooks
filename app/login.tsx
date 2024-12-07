@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { router } from 'expo-router';
 import { useSession } from "@/contexts/AuthContext";
 import { API_URL } from "../config";
 
@@ -41,6 +42,8 @@ export default function LoginForm() {
         signIn(response.data.token);
         console.log(`Response:
               ${response.data.token}`);
+            //   Send user to next screen after successful login
+            router.replace('/home')
       })
       .catch((e) => {
         console.log(e);

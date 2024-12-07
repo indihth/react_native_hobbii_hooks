@@ -34,10 +34,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SessionProvider>
-        <Stack>
+        <Slot />
+        {/* <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-        </Stack>
+        </Stack> */}
       </SessionProvider>
       <StatusBar style="auto" />
     </ThemeProvider>

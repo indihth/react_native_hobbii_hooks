@@ -1,3 +1,5 @@
+
+
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
@@ -7,7 +9,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
+  
+  // Defines layout and look for tabs section
   return (
     <Tabs
       screenOptions={{
@@ -22,15 +25,36 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="(patterns)/patterns"
+        options={{
+          title: 'Patterns'
+        }}
+      />
+      <Tabs.Screen
+        name="(projects)/projects"
         options={{
           title: 'Projects'
+        }}
+      />
+      <Tabs.Screen
+        name="(user)/profile"
+        options={{
+          title: 'Me'
+        }}
+      />
+
+      {/* Hidden routes */}
+      <Tabs.Screen
+        name="(patterns)/[id]"
+        options={{
+          title: 'Me',
+          href: null
         }}
       />
     </Tabs>
