@@ -25,38 +25,30 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
           title: 'Home',
         }}
       />
       <Tabs.Screen
-        name="(patterns)/patterns"
+        name="patterns"
         options={{
           title: 'Patterns'
         }}
       />
       <Tabs.Screen
-        name="(projects)/projects"
+        name="projects"
         options={{
           title: 'Projects'
         }}
       />
       <Tabs.Screen
-        name="(user)/profile"
+        name="profile"
         options={{
           title: 'Me'
         }}
       />
 
-      {/* Hidden routes */}
-      <Tabs.Screen
-        name="(patterns)/[id]"
-        options={{
-          title: 'Me',
-          href: null
-        }}
-      />
     </Tabs>
   );
 }

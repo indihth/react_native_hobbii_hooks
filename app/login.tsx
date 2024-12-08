@@ -43,7 +43,7 @@ export default function LoginForm() {
         console.log(`Response:
               ${response.data.token}`);
             //   Send user to next screen after successful login
-            router.replace('/home')
+            router.replace('/')
       })
       .catch((e) => {
         console.log(e);
