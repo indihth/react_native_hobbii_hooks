@@ -1,7 +1,7 @@
 import { API_URL } from "@/config";
 // import axios from "axios";
 import { axiosAuth } from "@/api/axiosInstance";
-import { PatternType } from "@/types/pattern";
+import { PatternType } from "@/types/index";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
@@ -14,25 +14,6 @@ import {
 } from "react-native-paper";
 
 import { useSession } from "@/contexts/AuthContext";
-
-
-// // Define Pattern interface
-// interface Pattern {
-//   _id: number;
-//   title: string;
-//   description: string;
-//   craft_type: string;
-//   suggested_yarn: string;
-//   yarn_weight: string;
-//   gauge: string;
-//   meterage: string;
-//   user: { id: number; full_name: string }; // object with id and full_name
-//   image_path: string[]; // array of strings
-//   deleted: boolean;
-//   createdAt: string;
-//   updatedAt: string;
-//   // Add other properties as needed
-// }
 
 const PatternDetails = () => {
   const { session } = useSession();
@@ -76,9 +57,7 @@ const PatternDetails = () => {
           <Text variant="titleLarge">{pattern.title}</Text>
           <Text variant="bodyMedium">{pattern.description}</Text>
         </Card.Content>
-        <Card.Cover
-                    source={{ uri: `${imageURL}${pattern.image_path[0]}` }}
-                  />
+        <Card.Cover source={{ uri: `${imageURL}${pattern.image_path[0]}` }} />
       </Card>
     </View>
   );

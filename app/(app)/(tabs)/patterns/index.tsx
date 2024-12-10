@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProjectCard from "@/components/ProjectCard";
-import { PatternType } from "@/types/pattern";
+import { PatternType } from "@/types/index";
 import { API_URL } from "@/config";
 import { Link, router } from "expo-router";
 import {
@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   MD2Colors,
 } from "react-native-paper";
+import { IResponseType } from "@/types";
 
 // Define Pattern interface
 interface Pattern {
@@ -46,9 +47,7 @@ const Patterns = () => {
     setLoading(true); // display loading text until api call is completed
 
     // API call to get all patterns
-    // axios
-      // .get(`${API_URL}/patterns`, {})
-    axiosAuth('/patterns')
+    axiosAuth("/patterns")
       .then((response) => {
         setPatterns(response.data);
         setLoading(false);
@@ -65,39 +64,44 @@ const Patterns = () => {
 
   return (
     // <SafeAreaView className="flex-1 justify-center">
-      <View className="flex-1 justify-center">
-        <Text className="text-center ">Search patterns</Text>
+    <View className="flex-1 justify-center">
+      <Text className="text-center ">Search patterns</Text>
 
-        <FlatList
-          data={patterns}
-          renderItem={({ item }) => (
-            <Link push href={`/patterns/${item._id}`} asChild>
-              <Pressable>
-                <Card className="mb-10 ">
-                  {/* <Card.Title
+      <Pressable>
+        <Link href="/patterns/create" asChild>
+          <Button>New Pattern</Button>
+        </Link>
+      </Pressable>
+      <FlatList
+        data={patterns}
+        renderItem={({ item }) => (
+          <Link push href={`/patterns/${item._id}`} asChild>
+            <Pressable>
+              <Card className="mb-10 ">
+                {/* <Card.Title
                     title={item.title}
                     subtitle={item.description}
                     // left={LeftContent}
                   /> */}
-                  <Card.Content>
-                    <Text variant="titleLarge">{item.title}</Text>
-                    <Text variant="bodyMedium">{item.description}</Text>
-                  </Card.Content>
-                  <Card.Cover
-                    source={{ uri: `${imageURL}${item.image_path[0]}` }}
-                  />
-                  {/* <Card.Actions>
+                <Card.Content>
+                  <Text variant="titleLarge">{item.title}</Text>
+                  <Text variant="bodyMedium">{item.description}</Text>
+                </Card.Content>
+                <Card.Cover
+                  source={{ uri: `${imageURL}${item.image_path[0]}` }}
+                />
+                {/* <Card.Actions>
                     <Button>Cancel</Button>
                     <Button>Ok</Button>
                   </Card.Actions> */}
-                </Card>
-              </Pressable>
-            </Link>
-          )}
-        />
+              </Card>
+            </Pressable>
+          </Link>
+        )}
+      />
 
-        {/* <ProjectCard /> */}
-      </View>
+      {/* <ProjectCard /> */}
+    </View>
     // </SafeAreaView>
   );
 };
