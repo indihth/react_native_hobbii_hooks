@@ -7,16 +7,28 @@ import { Button, Text, TextInput, RadioButton } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 
 import { PatternType, PatternTypeID, YarnTypeID } from "@/types/index";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { AxiosError, AxiosResponse } from "axios";
+import FormField from "@/components/FormField";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+type ErrorType = {
+  title?: string;
+  description?: string;
+  craft_type?: string;
+  suggested_yarn?: string;
+  yarn_weight?: string;
+  gauge?: string;
+  meterage?: string;
+  image_path?: string;
+};
 
 export default function Page() {
   const router = useRouter();
   const { session } = useSession();
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
-  const [error, setError] = useState<AxiosError | string >("");
 
   const [pattern, setPattern] = useState<PatternType | null>(null);
   const [yarns, setYarns] = useState<YarnTypeID[] | null>(null);
@@ -31,8 +43,18 @@ export default function Page() {
     suggested_yarn: "",
     yarn_weight: "",
     gauge: "",
-    meterage: undefined,
-    image_path: [],
+    image_path: [""],
+  });
+
+  const [error, setError] = useState<ErrorType>({
+    title: "",
+    description: "",
+    craft_type: "",
+    suggested_yarn: "",
+    yarn_weight: "",
+    gauge: "",
+    meterage: "",
+    image_path: "",
   });
 
   // Load yarns for dropdown
@@ -44,7 +66,7 @@ export default function Page() {
       .then((response) => {
         setYarns(response.data);
         setLoading(false);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((e) => {
         console.error(e);
@@ -52,19 +74,26 @@ export default function Page() {
       });
   }, []);
 
-  const handleChange = (e: any) => {
-    setForm((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
-    // console.log(form)
-  };
+  // const handleChange = (field: string) => (value: string) => {
+  //   setForm((prevState) => ({
+  //     ...prevState, // takes what is already in form (spread operator)
+  //     [field]: value, // target.id is web only, use field name instead for android
+  //   }));
+  // };
 
-  //   Radio button handled seperately
-  const handleRadioChange = (newValue: string) => {
+    // Higher-order function, passing in a field name to dynamically set the state
+    const handleChange = (field: keyof PatternType) => (value: string) => {
+      setForm((prevState) => ({
+        ...prevState, // takes what is already in form (spread operator)
+        [field]: value, // target.id is web only, use field name instead for android
+      }));
+    };
+
+  //   Radio button handled separately
+  const handleRadioChange = (value: string) => {
     setForm((prevState) => ({
       ...prevState,
-      craft_type: newValue,
+      craft_type: value,
     }));
   };
 
@@ -79,11 +108,11 @@ export default function Page() {
   // Select image file and update form state with uri
   const pickImageAsync = async (): Promise<void> => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      base64: true
+      base64: true,
     });
 
     if (!result.canceled) {
@@ -99,7 +128,27 @@ export default function Page() {
     }
   };
 
+  const validate = () => {
+    let hasError = false;
+    let newError: ErrorType = {};
+
+    // Iterate over each key in the form object and set an error if the field is empty
+    Object.keys(form).forEach((key) => {
+      if (!form[key as keyof PatternType]) {
+        newError[key as keyof ErrorType] = "Field is required";
+        hasError = true;
+      }
+    });
+
+    setError(newError);
+    return hasError;
+  };
+
   const handleSubmit = () => {
+
+    if (validate()) {
+      return;
+    }
     console.log(form);
 
     axiosPost("/patterns", form, session)
@@ -111,84 +160,80 @@ export default function Page() {
       })
       .catch((e: AxiosError) => {
         console.log(e);
-        setError(e);
       });
   };
 
-    useEffect(() => {
-      console.log(form); // Logs the updated state after the component re-renders
-    }, [form.image_path]); // Dependency array will run this when 'form' changes
+  useEffect(() => {
+    console.log(form); // Logs the updated state after the component re-renders
+  }, [form.image_path]); // Dependency array will run this when 'form' changes
 
   if (loading === true) return <Text>Loading API...</Text>;
 
   return (
-    <>
-      <Text>Title</Text>
-      <TextInput
-        placeholder="Title"
-        value={form.title}
-        onChange={handleChange}
-        id="title"
-      />
-
-      <Text>Description</Text>
-      <TextInput
-        placeholder="Description"
-        value={form.description}
-        onChange={handleChange}
-        id="description"
-      />
-
-      <Text>Craft Type</Text>
-      <RadioButton.Group
-        onValueChange={handleRadioChange}
-        value={form.craft_type}
-      >
-        <View>
-          <Text>Crochet</Text>
-          <RadioButton value="crochet" />
-        </View>
-        <View>
-          <Text>Knitting</Text>
-          <RadioButton value="knitting" />
-        </View>
-      </RadioButton.Group>
-      {/* <TextInput
-        placeholder="Crochet or Knitting?"
-        value={form.craft_type}
-        onChange={handleChange}
-        id="craft_type"
-      /> */}
-
-      <Text>Suggested Yarns</Text>
-      <Picker
-        selectedValue={selectedYarn}
-        onValueChange={handleYarnChange} // Update selected yarn when the user selects a new one
-      >
-        <Picker.Item label="Select a yarn" value={null} />
-        {yarns?.map((yarn) => (
-          <Picker.Item key={yarn._id} label={yarn.title} value={yarn._id} />
-        ))}
-      </Picker>
-
-      <TextInput
-        placeholder="What yarn weight?"
-        value={form.yarn_weight}
-        onChange={handleChange}
-        id="yarn_weight"
-      />
-
-      <TextInput
-        placeholder="What is the gauge?"
-        value={form.gauge}
-        onChange={handleChange}
-        id="gauge"
-      />
-
-      <Button onPress={pickImageAsync}>Choose an image</Button>
-
-      {/* <Text>{error}</Text> */}
-      <Button onPress={handleSubmit}>Submit</Button>
-    </>
+    <ScrollView>
+      <SafeAreaView className="flex-1 mx-5">
+        <FormField
+          title="Title"
+          value={form.title}
+          handleChangeText={handleChange("title")}
+        />
+        {error.title && <Text style={{ color: "red" }}>{error.title}</Text>}
+        <FormField
+          title="Description"
+          value={form.description}
+          handleChangeText={handleChange("description")}
+        />
+        {error.description && (
+          <Text style={{ color: "red" }}>{error.description}</Text>
+        )}
+        <Text>Craft Type</Text>
+        <RadioButton.Group
+          onValueChange={handleRadioChange}
+          value={form.craft_type}
+        >
+          <View>
+            <Text>Crochet</Text>
+            <RadioButton value="crochet" />
+          </View>
+          <View>
+            <Text>Knitting</Text>
+            <RadioButton value="knitting" />
+          </View>
+        </RadioButton.Group>
+        {error.craft_type && (
+          <Text style={{ color: "red" }}>{error.craft_type}</Text>
+        )}
+        <Text>Suggested Yarns</Text>
+        <Picker
+          selectedValue={selectedYarn}
+          onValueChange={handleYarnChange} // Update selected yarn when the user selects a new one
+        >
+          <Picker.Item label="Select a yarn" value={null} />
+          {yarns?.map((yarn) => (
+            <Picker.Item key={yarn._id} label={yarn.title} value={yarn._id} />
+          ))}
+        </Picker>
+        {error.suggested_yarn && (
+          <Text style={{ color: "red" }}>{error.suggested_yarn}</Text>
+        )}
+        <FormField
+          title="Yarn Weight"
+          value={form.yarn_weight}
+          handleChangeText={handleChange("yarn_weight")}
+        />
+        {error.yarn_weight && (
+          <Text style={{ color: "red" }}>{error.yarn_weight}</Text>
+        )}
+        <FormField
+          title="Gauge"
+          value={form.gauge} // don't understand why theres a type error
+          handleChangeText={handleChange("gauge")}
+        />
+        {error.gauge && <Text style={{ color: "red" }}>{error.gauge}</Text>}
+        <Button onPress={pickImageAsync}>Choose an image</Button>
+        {/* <Text>{error}</Text> */}
+        <Button onPress={handleSubmit}>Submit</Button>
+      </SafeAreaView>
+    </ScrollView>
   );
 }

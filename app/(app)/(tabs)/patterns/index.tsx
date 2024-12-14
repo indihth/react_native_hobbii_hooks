@@ -29,19 +29,19 @@ const Patterns = () => {
   const tempImage = "./placeholderImage.png"
 
   useEffect(() => {
-    setLoading(true); // display loading text until api call is completed
-
-    // API call to get all patterns
-    axiosAuth("/patterns")
-      .then((response) => {
+    const fetchPatterns = async () => {
+      try {
+        setLoading(true); // display loading text until api call is completed
+        const response = await axiosAuth("/patterns");
         setPatterns(response.data);
-        setLoading(false);
-        console.log(tempImage)
-        // console.log(patterns);
-      })
-      .catch((e) => {
+      } catch (e) {
         console.error(e);
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPatterns();
   }, []);
 
 
