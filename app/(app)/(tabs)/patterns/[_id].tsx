@@ -23,6 +23,8 @@ const PatternDetails = () => {
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
+  const tempImage = "placeholderImage.png"
+
 
   useEffect(() => {
     setLoading(true); // display loading text until api call is completed
@@ -57,7 +59,12 @@ const PatternDetails = () => {
           <Text variant="titleLarge">{pattern.title}</Text>
           <Text variant="bodyMedium">{pattern.description}</Text>
         </Card.Content>
-        <Card.Cover source={{ uri: `${imageURL}${pattern.image_path[0]}` }} />
+        <Card.Cover 
+        // source={{ uri: `${imageURL}${pattern.image_path[0]}` }} 
+        source={{ uri: "placeholderImage.png" }} 
+        // source={{ uri: (pattern.image_path ? `${imageURL}${pattern.image_path[0]}`: tempImage) }}
+
+        />
       </Card>
     </View>
   );

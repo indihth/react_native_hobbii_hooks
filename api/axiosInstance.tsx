@@ -20,7 +20,8 @@ export const axiosPost = (endpoint: string, formData: object, token?: string | n
     return axiosInstance.post(endpoint, formData, {
         headers: {
             // If token was passed, set auth header, otherwise leave undefined
-            Authorization: token ? `Bearer ${token}` : undefined
+            Authorization: token ? `Bearer ${token}` : undefined,
+            'content-type': 'multipart/form-data'
         }
     })
 };

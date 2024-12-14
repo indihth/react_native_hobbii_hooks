@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProjectCard from "@/components/ProjectCard";
-import { PatternType } from "@/types/index";
+import { PatternType, PatternTypeID } from "@/types/index";
 import { API_URL } from "@/config";
 import { Link, router } from "expo-router";
 import {
@@ -17,31 +17,16 @@ import {
 } from "react-native-paper";
 import { IResponseType } from "@/types";
 
-// Define Pattern interface
-interface Pattern {
-  _id: number;
-  title: string;
-  description: string;
-  craft_type: string;
-  suggested_yarn: string;
-  yarn_weight: string;
-  gauge: string;
-  meterage: string;
-  user: { id: number; full_name: string }; // object with id and full_name
-  image_path: string[]; // array of strings
-  deleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-  // Add other properties as needed
-}
+// Placeholder image
+// import placeholderImage from '@/assets/images/placeholderImage'
+
 
 const Patterns = () => {
-  const [patterns, setPatterns] = useState<Pattern[]>([]); // type of an array of Patterns
+  const [patterns, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Patterns
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
-  const pattern = patterns[patterns.length - 1];
-
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
+  const tempImage = "./placeholderImage.png"
 
   useEffect(() => {
     setLoading(true); // display loading text until api call is completed
@@ -51,12 +36,15 @@ const Patterns = () => {
       .then((response) => {
         setPatterns(response.data);
         setLoading(false);
+        console.log(tempImage)
         // console.log(patterns);
       })
       .catch((e) => {
         console.error(e);
       });
   }, []);
+
+
 
   if (loading) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} />; // Replace with a spinner if needed
@@ -88,16 +76,15 @@ const Patterns = () => {
                   <Text variant="bodyMedium">{item.description}</Text>
                 </Card.Content>
                 <Card.Cover
-                  source={{ uri: `${imageURL}${item.image_path[0]}` }}
+                  source={{ uri: (item.image_path ? `${imageURL}${item.image_path[0]}`: tempImage) }}
+                  // source={{ uri: tempImage }} 
+                  // source={{ uri:  `${imageURL}${item.image_path[0]}` }}
                 />
-                {/* <Card.Actions>
-                    <Button>Cancel</Button>
-                    <Button>Ok</Button>
-                  </Card.Actions> */}
               </Card>
             </Pressable>
           </Link>
         )}
+        keyExtractor={(pattern: PatternTypeID) => pattern._id}
       />
 
       {/* <ProjectCard /> */}

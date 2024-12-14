@@ -35,7 +35,7 @@ export interface PatternType {
     suggested_yarn?: string;
     yarn_weight?: string;
     gauge?: string;
-    meterage?: string;
+    meterage?: number;
     user?: { id: number; full_name: string }; // object with id and full_name
     image_path?: string[]; // array of strings
     deleted?: boolean;
@@ -44,7 +44,7 @@ export interface PatternType {
   }
   
   export interface PatternTypeID extends PatternType {
-    _id: number;
+    _id: string;
   }
 
 export interface YarnType {
@@ -54,7 +54,7 @@ export interface YarnType {
   }
   
   export interface YarnTypeID extends PatternType {
-    _id: number;
+    _id: string;
   }
 
   

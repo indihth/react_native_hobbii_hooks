@@ -71,19 +71,22 @@ export default function LoginForm() {
 
             <View className="flex-1 justify-center">
               <Text variant="titleLarge">Login Form</Text>
-              <TextInput
-                placeholder="Email"
+              {/* <TextInput
+                label="Email"
+                // placeholder="Email"
                 value={form.email} // set as blank by default (useState)
-                onChange={handleChange}
-                id="email"
-              />
-              <TextInput
+                // onChange={handleChange}
+                onChangeText={handleChange}
+                // id="email"
+              /> */}
+              {/* <TextInput
+                label="Password"
                 placeholder="Password"
                 secureTextEntry
                 value={form.password} // set as blank by default (useState)
-                onChange={handleChange}
+                onChangeText={handleChange}
                 id="password"
-              />
+              /> */}
 
               {/* Displaying error */}
               <Text variant="bodyMedium">{error}</Text>
