@@ -9,10 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Button,
-  TextInput,
   Text,
-  ActivityIndicator,
-  MD2Colors,
 } from "react-native-paper";
 import { View, ImageBackground, Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";

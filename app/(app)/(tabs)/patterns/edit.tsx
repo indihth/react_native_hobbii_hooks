@@ -4,16 +4,16 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
-import { axiosAuth, axiosPost } from "@/api/axiosInstance";
-import { Button, Text, RadioButton, FAB } from "react-native-paper";
+import { axiosAuth, axiosPost, axiosPut } from "@/api/axiosInstance";
+import { Button, Text, RadioButton } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 
 import { PatternType, PatternTypeID, YarnTypeID } from "@/types/index";
 import { Alert, ScrollView, View, Image } from "react-native";
-import { StackActions } from "@react-navigation/native";
 import { AxiosError, AxiosResponse } from "axios";
 import FormField from "@/components/FormField";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 type ErrorType = {
   title?: string;
@@ -29,7 +29,7 @@ type ErrorType = {
 export default function Page() {
   const router = useRouter();
   const { session } = useSession();
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
 
   const [pattern, setPattern] = useState<PatternType | null>(null);
@@ -38,27 +38,26 @@ export default function Page() {
   const [craftValue, setCraftValue] = useState<string | null>(null); // radio button
   const [image, setImage] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<PatternType>({
+    title: pattern?.title || "",
+    description: pattern?.description || "",
+    craft_type: pattern?.craft_type || "",
+    suggested_yarn: pattern?.suggested_yarn || undefined,
+    yarn_weight: pattern?.yarn_weight || "",
+    gauge: pattern?.gauge || "",
+    meterage: pattern?.meterage || "", // Add meterage to form state
+    image_path: pattern?.image_path || undefined, // type error
+  });
+
+  const [error, setError] = useState<ErrorType>({
     title: "",
     description: "",
     craft_type: "",
     suggested_yarn: "",
     yarn_weight: "",
     gauge: "",
-    meterage: "",
+    meterage: "", // Add meterage to error state
     image_path: "",
-    // image_path: null as DocumentPicker.DocumentPickerAsset | null,
-  });
-
-  const [error, setError] = useState<ErrorType>({
-    title: undefined,
-    description: undefined,
-    craft_type: undefined,
-    suggested_yarn: undefined,
-    yarn_weight: undefined,
-    gauge: undefined,
-    meterage: undefined,
-    image_path: undefined,
   });
 
   // Load yarns for dropdown
@@ -78,12 +77,33 @@ export default function Page() {
       });
   }, []);
 
-  // const handleChange = (field: string) => (value: string) => {
-  //   setForm((prevState) => ({
-  //     ...prevState, // takes what is already in form (spread operator)
-  //     [field]: value, // target.id is web only, use field name instead for android
-  //   }));
-  // };
+  useEffect(() => {
+    setLoading(true); // display loading text until api call is completed
+    if (id) {
+      // Fetch the pattern details using the id
+      axiosAuth(`/patterns/${id}`, session)
+        .then((response) => {
+          setPattern(response.data.data);
+          setForm({
+            title: response.data.data.title,
+            description: response.data.data.description,
+            craft_type: response.data.data.craft_type,
+            suggested_yarn: response.data.data.suggested_yarn,
+            yarn_weight: response.data.data.yarn_weight,
+            gauge: response.data.data.gauge,
+            meterage: response.data.data.meterage, // Set meterage from response
+            image_path: response.data.data.image_path,
+          });
+          setSelectedYarn(response.data.data.suggested_yarn?._id); // Set the selected yarn
+          setLoading(false)
+        })
+        .catch((e) => {
+          console.error(e);
+          setLoading(false)
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [id, session]);
 
   // Higher-order function, passing in a field name to dynamically set the state
   const handleChange = (field: keyof PatternType) => (value: string) => {
@@ -102,10 +122,10 @@ export default function Page() {
   };
 
   const handleYarnChange = (value: string) => {
-    // setSelectedYarn(value); // Update the selected yarn's id
+    const selectedYarn = yarns?.find((yarn) => yarn._id === value);
     setForm((prevState) => ({
       ...prevState,
-      suggested_yarn: value,
+      suggested_yarn: selectedYarn,
     }));
   };
 
@@ -115,7 +135,8 @@ export default function Page() {
     });
 
     if (!result.canceled) {
-      setForm({ ...form, image_path: result.assets[0].uri });
+      // image_path expects an array of strings, store the uri to an array
+      setForm({ ...form, image_path: [result.assets[0].uri] });
     } else {
       setTimeout(() => {
         Alert.alert("Document picked", JSON.stringify(result, null, 2));
@@ -164,65 +185,65 @@ export default function Page() {
 
   const handleSubmit = () => {
     if (validate()) {
+      Alert.alert("Please fill out all required fields");
       return;
     }
     console.log(form);
+    setLoading(true);
 
-    axiosPost("/patterns", form, session)
+    axiosPut(`/patterns/${id}`, form, session)
       .then((response: AxiosResponse<{ data: PatternTypeID }>) => {
         // .then((response) => {
         console.log(response);
+        setLoading(false);
         // redirects to view pattern, replace removes previous stack, can't go back to 'create'
-        router.replace(`/patterns/${response.data.data._id}`);
+        router.replace(`/patterns/${id}`);
       })
       .catch((e: AxiosError) => {
         console.log(e.message);
+        setLoading(false);
       });
   };
 
-  useEffect(() => {
-    console.log(form); // Logs the updated state after the component re-renders
-  }, [form.image_path]); // Dependency array will run this when 'form' changes
+  // useEffect(() => {
+  //   console.log(form); // Logs the updated state after the component re-renders
+  // }, [form.image_path]); // Dependency array will run this when 'form' changes
 
-  if (loading === true) return <Text>Loading API...</Text>;
+  if (loading || !pattern) {
+    return <LoadingIndicator/>; // Replace with a spinner if needed
+  }
+
 
   return (
     <ScrollView>
-      <SafeAreaView className="flex-1 mx-5 mt-5">
+      <SafeAreaView className="flex-1 mx-5">
         <FormField
           title="Title"
           value={form.title}
           handleChangeText={handleChange("title")}
-          error={error.title}
         />
         {error.title && <Text style={{ color: "red" }}>{error.title}</Text>}
         <FormField
           title="Description"
           value={form.description}
           handleChangeText={handleChange("description")}
-          error={error.description}
-          multiline={true}
-          numberOfLines={4}
         />
         {error.description && (
           <Text style={{ color: "red" }}>{error.description}</Text>
         )}
         <Text>Craft Type</Text>
-
         <RadioButton.Group
           onValueChange={handleRadioChange}
           value={form.craft_type}
         >
-          <RadioButton.Item label="Crochet" value="crochet" />
-          <RadioButton.Item label="Knitting" value="knitting" />
-          {/* <View>
+          <View>
             <Text>Crochet</Text>
             <RadioButton value="crochet" />
           </View>
           <View>
             <Text>Knitting</Text>
             <RadioButton value="knitting" />
-          </View> */}
+          </View>
         </RadioButton.Group>
         {error.craft_type && (
           <Text style={{ color: "red" }}>{error.craft_type}</Text>
@@ -244,8 +265,6 @@ export default function Page() {
           title="Yarn Weight"
           value={form.yarn_weight}
           handleChangeText={handleChange("yarn_weight")}
-          error={error.yarn_weight}
-
         />
         {error.yarn_weight && (
           <Text style={{ color: "red" }}>{error.yarn_weight}</Text>
@@ -254,31 +273,28 @@ export default function Page() {
           title="Gauge"
           value={form.gauge} // don't understand why theres a type error
           handleChangeText={handleChange("gauge")}
-          error={error.gauge}
-
         />
         {error.gauge && <Text style={{ color: "red" }}>{error.gauge}</Text>}
-
         <FormField
           title="Meterage" // Add new FormField for meterage
           value={form.meterage}
           handleChangeText={handleChange("meterage")}
-          error={error.meterage}
         />
         {error.meterage && <Text style={{ color: "red" }}>{error.meterage}</Text>}
-
 
         <View>
           {form.image_path ? (
             <View>
-              {/* <Image
-                  source={{ uri: form.image_path.uri }}
-                  resizeMode="cover"
-                  className="w-full h-64 rounded-2xl"
-                /> */}
-              <Text>{form.image_path}</Text>
+              <Image
+                source={{ uri: form.image_path[0] }}
+                resizeMode="cover"
+                className="w-full h-64 rounded-2xl"
+              />
+              {/* <Text>{form.image_path}</Text> */}
               <Button onPress={openPicker}>Change image</Button>
-              <Button onPress={(e) => setForm({ ...form, image_path: "" })}>
+              <Button
+                onPress={(e) => setForm({ ...form, image_path: undefined })}
+              >
                 X
               </Button>
             </View>
@@ -295,14 +311,6 @@ export default function Page() {
 
         {/* <Text>{error}</Text> */}
         <Button onPress={handleSubmit}>Submit</Button>
-        <View className="flex-1 items-end">
-          <FAB 
-          icon={"plus"}
-          size="medium"
-          variant="primary"
-          onPress={() => Alert.alert("Add another yarn")}
-          />
-        </View>
       </SafeAreaView>
     </ScrollView>
   );

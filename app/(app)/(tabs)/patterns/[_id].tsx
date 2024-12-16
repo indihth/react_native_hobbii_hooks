@@ -14,17 +14,14 @@ import {
 import {
   Button,
   Card,
-  Text,
-  ActivityIndicator,
-  MD2Colors,
+  Text
 } from "react-native-paper";
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap } from "react-native-tab-view";
 
 import { useSession } from "@/contexts/AuthContext";
 import DetailElement from "@/components/DetailElement";
 import SuggestedYarns from "@/components/SuggestedYarns";
-
-
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 const PatternDetails = () => {
   const { session } = useSession();
@@ -55,31 +52,32 @@ const PatternDetails = () => {
 
   // Display while loading
   if (loading || !pattern) {
-    return <ActivityIndicator animating={true} color={MD2Colors.red800} />; // Replace with a spinner if needed
+    return <LoadingIndicator/>; // Replace with a spinner if needed
   }
 
-// Tab view for Pattern Information and Suggested Yarns
-const InfoRoute = () => (
-  <View className="py-4">
-    <Text variant="titleMedium" className="pb-3">
-      Pattern Information
-    </Text>
-    <DetailElement title="Yarn Weight" value={pattern?.yarn_weight} />
-    <DetailElement title="Gauge" value={pattern?.gauge} />
-    <DetailElement title="Meterage" value={pattern?.meterage} />
-    <Text variant="bodyLarge" className="pt-3">
-      {pattern?.description} </Text>
-  </View>
-)
+  // Tab view for Pattern Information and Suggested Yarns
+  const InfoRoute = () => (
+    <View className="py-4">
+      <Text variant="titleMedium" className="pb-3">
+        Pattern Information
+      </Text>
+      <DetailElement title="Yarn Weight" value={pattern?.yarn_weight} />
+      <DetailElement title="Gauge" value={pattern?.gauge} />
+      <DetailElement title="Meterage" value={pattern?.meterage} />
+      <Text variant="bodyLarge" className="pt-3">
+        {pattern?.description}{" "}
+      </Text>
+    </View>
+  );
 
-const YarnsRoute = () => (
-  <SuggestedYarns suggested_yarn={pattern?.suggested_yarn} />
-)
+  const YarnsRoute = () => (
+    <SuggestedYarns suggested_yarn={pattern?.suggested_yarn} />
+  );
 
-const routes = [
-  { key: 'info', title: 'Info' },
-  { key: 'yarns', title: 'Yarns' },
-];
+  const routes = [
+    { key: "info", title: "Info" },
+    { key: "yarns", title: "Yarns" },
+  ];
   return (
     <ScrollView>
       <SafeAreaView>
@@ -93,19 +91,23 @@ const routes = [
             <Text variant="displaySmall">{pattern.title}</Text>
             <Text variant="bodyMedium">by {pattern.user?.full_name}</Text>
           </View>
+          {/* Pass id as a url query */}
+          <Link push href={`/patterns/edit?id=${_id}`} asChild>
+            <Button>Edit Pattern</Button>
+          </Link>
           <TabView
             navigationState={{ index, routes }}
             // renderScene={renderScene}
             // Prevent unnecessary re-renders
-            renderScene={({route}) => {
+            renderScene={({ route }) => {
               switch (route.key) {
-                case 'info':
+                case "info":
                   return <InfoRoute />;
-                case 'yarns':
+                case "yarns":
                   return <YarnsRoute />;
                 default:
                   return null;
-            }
+              }
             }}
             onIndexChange={setIndex}
             initialLayout={{ width: layout.width }}

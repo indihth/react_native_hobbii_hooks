@@ -12,10 +12,10 @@ import {
   Button,
   Card,
   Text,
-  ActivityIndicator,
   MD2Colors,
 } from "react-native-paper";
 import { IResponseType } from "@/types";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 // Placeholder image
 // import placeholderImage from '@/assets/images/placeholderImage'
@@ -44,10 +44,8 @@ const Patterns = () => {
     fetchPatterns();
   }, []);
 
-
-
-  if (loading) {
-    return <ActivityIndicator animating={true} color={MD2Colors.red800} />; // Replace with a spinner if needed
+  if (loading || !patterns) {
+    return <LoadingIndicator/>; // Replace with a spinner if needed
   }
 
   return (

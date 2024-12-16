@@ -41,7 +41,7 @@ export interface YarnTypeID extends PatternType {
 export interface SuggestedYarn {
   _id: string;
   title: string;
-  fibers: Fiber[];
+  fibers?: Fiber[];
 };
 
 export interface Fiber {

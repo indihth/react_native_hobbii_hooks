@@ -1,6 +1,6 @@
 import { Redirect, Stack } from "expo-router";
 import { useSession } from "@/contexts/AuthContext";
-import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 
 export default function AppLayout() {
@@ -8,8 +8,7 @@ export default function AppLayout() {
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   if (isLoading) {
-    return <ActivityIndicator className="flex-1 items-center justify-center" animating={true} color={MD2Colors.red800} />;
-    // return <Text>Loading...</Text>;
+    return <LoadingIndicator/>; // Replace with a spinner if needed
   }
 
   // Only require authentication within the (app) group's layout as users

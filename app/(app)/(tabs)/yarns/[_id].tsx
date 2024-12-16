@@ -13,8 +13,6 @@ import {
   Button,
   Card,
   Text,
-  ActivityIndicator,
-  MD2Colors,
 } from "react-native-paper";
 import { TabView, SceneMap } from 'react-native-tab-view';
 
@@ -22,6 +20,7 @@ import { useSession } from "@/contexts/AuthContext";
 import DetailElement from "@/components/DetailElement";
 import SuggestedYarns from "@/components/SuggestedYarns";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 
 
@@ -54,7 +53,7 @@ const YarnDetails = () => {
 
   // Display while loading
   if (loading || !yarn) {
-    return <ActivityIndicator animating={true} color={MD2Colors.red800} />; // Replace with a spinner if needed
+    return <LoadingIndicator/>; // Replace with a spinner if needed
   }
 
 

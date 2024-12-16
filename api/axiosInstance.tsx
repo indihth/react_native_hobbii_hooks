@@ -26,4 +26,14 @@ export const axiosPost = (endpoint: string, formData: object, token?: string | n
     })
 };
 
+export const axiosPut = (endpoint: string, formData: object, token?: string | null) => {
+    return axiosInstance.put(endpoint, formData, {
+        headers: {
+            // If token was passed, set auth header, otherwise leave undefined
+            Authorization: token ? `Bearer ${token}` : undefined,
+            'content-type': 'multipart/form-data'
+        }
+    })
+};
+
 

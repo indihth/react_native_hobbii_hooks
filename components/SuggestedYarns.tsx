@@ -15,7 +15,7 @@ const SuggestedYarns: React.FC<Props> = ({ suggested_yarn }) => {
         Suggested Yarns
       </Text>
       <Text variant="bodyLarge">{suggested_yarn?.title}</Text>
-      {suggested_yarn?.fibers.map((fiber, index) => (
+      {suggested_yarn?.fibers?.map((fiber, index) => (
         <DetailElement
           key={index}
           title={fiber.fiber_name}

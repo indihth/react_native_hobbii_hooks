@@ -4,10 +4,13 @@ import { TextInput, Text } from "react-native-paper";
 
 interface FormFieldProps {
   title: string;
-  value: string;
+  value: string | undefined;
   placeholder?: string;
   handleChangeText: (text: string) => void;
   keyboardType?: string;
+  error?: string;
+  multiline?: boolean;
+  numberOfLines?: number;
   otherStyles?: object;
 }
 
@@ -18,6 +21,7 @@ const FormField: React.FC<FormFieldProps> = ({
   handleChangeText,
   otherStyles,
   keyboardType,
+  error,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -31,6 +35,7 @@ const FormField: React.FC<FormFieldProps> = ({
           placeholderTextColor="#7B7B8B"
           onChangeText={handleChangeText}
           secureTextEntry={title === "Password" && !showPassword}
+          error={error ? true : false}
           {...props}
         />
 

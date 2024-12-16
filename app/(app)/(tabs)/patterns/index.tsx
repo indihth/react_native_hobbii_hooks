@@ -11,11 +11,10 @@ import { Link, router } from "expo-router";
 import {
   Button,
   Card,
-  Text,
-  ActivityIndicator,
-  MD2Colors,
+  Text
 } from "react-native-paper";
 import { IResponseType } from "@/types";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 // Placeholder image
 // import placeholderImage from '@/assets/images/placeholderImage'
@@ -44,10 +43,8 @@ const Patterns = () => {
     fetchPatterns();
   }, []);
 
-
-
-  if (loading) {
-    return <ActivityIndicator animating={true} color={MD2Colors.red800} />; // Replace with a spinner if needed
+  if (loading || !patterns) {
+    return <LoadingIndicator/>; // Replace with a spinner if needed
   }
 
   return (
@@ -55,11 +52,9 @@ const Patterns = () => {
     <View className="flex-1 justify-center">
       <Text className="text-center ">Search patterns</Text>
 
-      <Pressable>
         <Link href="/patterns/create" asChild>
           <Button>New Pattern</Button>
         </Link>
-      </Pressable>
       <FlatList
         data={patterns}
         renderItem={({ item }) => (
