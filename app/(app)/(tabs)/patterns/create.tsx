@@ -58,7 +58,7 @@ export default function Page() {
     yarn_weight: undefined,
     gauge: undefined,
     meterage: undefined,
-    image_path: undefined,
+    // image_path: undefined,
   });
 
   // Load yarns for dropdown
@@ -151,10 +151,21 @@ export default function Page() {
     let newError: ErrorType = {};
 
     // Iterate over each key in the form object and set an error if the field is empty
-    Object.keys(form).forEach((key) => {
-      if (!form[key as keyof PatternType]) {
-        newError[key as keyof ErrorType] = "Field is required";
-        hasError = true;
+    const requiredFields = [
+      "title",
+      "description",
+      "craft_type",
+      "suggested_yarn",
+      "yarn_weight",
+      "gauge",
+      "meterage",
+      // "image_path",
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!form[field]) {
+      newError[field as keyof ErrorType] = "Field is required";
+      hasError = true;
       }
     });
 
@@ -163,16 +174,17 @@ export default function Page() {
   };
 
   const handleSubmit = () => {
-    if (validate()) {
-      return;
+    const hasValidationError = validate();
+    if (hasValidationError) {
+      console.log("Validation errors:", error);
+      return; // Exit the function if there are validation errors
     }
+
     console.log(form);
 
     axiosPost("/patterns", form, session)
       .then((response: AxiosResponse<{ data: PatternTypeID }>) => {
-        // .then((response) => {
         console.log(response);
-        // redirects to view pattern, replace removes previous stack, can't go back to 'create'
         router.replace(`/patterns/${response.data.data._id}`);
       })
       .catch((e: AxiosError) => {

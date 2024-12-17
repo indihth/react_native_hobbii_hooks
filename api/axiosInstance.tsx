@@ -36,4 +36,13 @@ export const axiosPut = (endpoint: string, formData: object, token?: string | nu
     })
 };
 
+export const axiosDelete = (endpoint: string, token?: string | null | undefined) => {
+    return axiosInstance.delete(endpoint, {
+        headers: {
+            // If token was passed, set auth header, otherwise leave undefined
+            Authorization: token ? `Bearer ${token}` : undefined
+        }
+    })
+};
+
 

@@ -172,10 +172,21 @@ export default function Page() {
     let newError: ErrorType = {};
 
     // Iterate over each key in the form object and set an error if the field is empty
-    Object.keys(form).forEach((key) => {
-      if (!form[key as keyof PatternType]) {
-        newError[key as keyof ErrorType] = "Field is required";
-        hasError = true;
+    const requiredFields = [
+      "title",
+      "description",
+      "craft_type",
+      "suggested_yarn",
+      "yarn_weight",
+      "gauge",
+      "meterage",
+      // "image_path",
+    ];
+
+    requiredFields.forEach((field) => {
+      if (!form[field]) {
+      newError[field as keyof ErrorType] = "Field is required";
+      hasError = true;
       }
     });
 

@@ -10,6 +10,7 @@ import {
   ScrollView,
   SafeAreaView,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import {
   Button,
@@ -22,6 +23,7 @@ import { useSession } from "@/contexts/AuthContext";
 import DetailElement from "@/components/DetailElement";
 import SuggestedYarns from "@/components/SuggestedYarns";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import DeleteButton from "@/components/DeleteButton";
 
 const PatternDetails = () => {
   const { session } = useSession();
@@ -92,9 +94,19 @@ const PatternDetails = () => {
             <Text variant="bodyMedium">by {pattern.user?.full_name}</Text>
           </View>
           {/* Pass id as a url query */}
-          <Link push href={`/patterns/edit?id=${_id}`} asChild>
-            <Button>Edit Pattern</Button>
-          </Link>
+          <View className="flex-row">
+            <Link push href={`/patterns/edit?id=${_id}`} asChild>
+              <Button>Edit Pattern</Button>
+            </Link>
+            <DeleteButton
+              resourceName="patterns"
+              id={_id}
+              session={session}
+              onDelete={() => console.log("pressed")} 
+              />
+              {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
+              {/* onDelete={() => router.push("/patterns")} /> */}
+          </View>
           <TabView
             navigationState={{ index, routes }}
             // renderScene={renderScene}
