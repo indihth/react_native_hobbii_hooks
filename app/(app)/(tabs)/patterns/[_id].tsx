@@ -11,12 +11,9 @@ import {
   SafeAreaView,
   useWindowDimensions,
   Alert,
+  ImageBackground,
 } from "react-native";
-import {
-  Button,
-  Card,
-  Text
-} from "react-native-paper";
+import { Button, Card, IconButton, Text } from "react-native-paper";
 import { TabView, SceneMap } from "react-native-tab-view";
 
 import { useSession } from "@/contexts/AuthContext";
@@ -24,6 +21,7 @@ import DetailElement from "@/components/DetailElement";
 import SuggestedYarns from "@/components/SuggestedYarns";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DeleteButton from "@/components/DeleteButton";
+import FavouriteButton from "@/components/FavouriteButton";
 
 const PatternDetails = () => {
   const { session } = useSession();
@@ -31,6 +29,7 @@ const PatternDetails = () => {
 
   const [pattern, setPattern] = useState<PatternType>(); // type of an array of Patterns
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
+
   const [index, setIndex] = useState(0);
   const layout = useWindowDimensions();
 
@@ -54,7 +53,7 @@ const PatternDetails = () => {
 
   // Display while loading
   if (loading || !pattern) {
-    return <LoadingIndicator/>; // Replace with a spinner if needed
+    return <LoadingIndicator />; // Replace with a spinner if needed
   }
 
   // Tab view for Pattern Information and Suggested Yarns
@@ -83,10 +82,17 @@ const PatternDetails = () => {
   return (
     <ScrollView>
       <SafeAreaView>
-        <Image
-          source={{ uri: `${pattern.image_path ?? [0]}` }}
-          style={{ height: 500, resizeMode: "cover" }}
-        />
+        <View className="flex-1">
+            <ImageBackground
+            source={{ uri: `${pattern.image_path ?? [0]}` }}
+            resizeMode="cover"
+            style={{ height: 500, justifyContent: "flex-end", alignItems: "flex-end" }}
+            >
+            <FavouriteButton resourceName="patterns" id={_id} session={session}/>
+
+            </ImageBackground>
+        </View>
+
         <View className="px-3 pt-3">
           {/* <Text>{_id}</Text> */}
           <View className="flex-row justify-between items-baseline mb-5">
@@ -102,10 +108,10 @@ const PatternDetails = () => {
               resourceName="patterns"
               id={_id}
               session={session}
-              onDelete={() => console.log("pressed")} 
-              />
-              {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
-              {/* onDelete={() => router.push("/patterns")} /> */}
+              onDelete={() => console.log("pressed")}
+            />
+            {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
+            {/* onDelete={() => router.push("/patterns")} /> */}
           </View>
           <TabView
             navigationState={{ index, routes }}

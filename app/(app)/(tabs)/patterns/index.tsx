@@ -11,7 +11,8 @@ import { Link, router } from "expo-router";
 import {
   Button,
   Card,
-  Text
+  Text,
+  IconButton,
 } from "react-native-paper";
 import { IResponseType } from "@/types";
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -23,6 +24,7 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 const Patterns = () => {
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Patterns
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
+  const [isSelected, setIsSelected] = useState(false);
 
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
   const tempImage = "./placeholderImage.png"
@@ -61,15 +63,22 @@ const Patterns = () => {
           <Link push href={`/patterns/${item._id}`} asChild>
             <Pressable>
               <Card className="mb-10 ">
-                {/* <Card.Title
+                <Card.Title
                     title={item.title}
                     subtitle={item.description}
                     // left={LeftContent}
-                  /> */}
-                <Card.Content>
+                    // right={(props: any) => (
+                    //   <IconButton
+                    //     {...props}
+                    //     icon={isSelected ? 'heart' : 'heart-outline'}
+                    //     onPress={() => setIsSelected(!isSelected)}
+                    //   />
+                    // )}
+                  />
+                {/* <Card.Content>
                   <Text variant="titleLarge">{item.title}</Text>
                   <Text variant="bodyMedium">{item.description}</Text>
-                </Card.Content>
+                </Card.Content> */}
                 <Card.Cover
                   source={{ uri: (item.image_path ? `${imageURL}${item.image_path[0]}`: tempImage) }}
                   // source={{ uri: tempImage }} 

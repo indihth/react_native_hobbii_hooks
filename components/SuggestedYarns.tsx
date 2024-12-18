@@ -26,7 +26,7 @@ const SuggestedYarns: React.FC<Props> = ({ suggested_yarn }) => {
                 pathname: '/yarns/[_id]',
                 params: { id: suggested_yarn?._id }
             }}>View Yarn</Link></Button> */}
-      <Link push href={`/yarns/${suggested_yarn?._id}`} asChild>
+      <Link href={`/yarns/${suggested_yarn?._id}`} asChild>
         <Button>View Yarn</Button>
       </Link>
     </View>
