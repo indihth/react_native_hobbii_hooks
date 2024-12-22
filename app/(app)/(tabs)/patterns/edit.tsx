@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
-import { axiosAuth, axiosPost, axiosPut } from "@/api/axiosInstance";
+import { axiosAuthGet, axiosPost, axiosPut } from "@/api/axiosInstance";
 import { Button, Text, RadioButton } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 
@@ -65,7 +65,7 @@ export default function Page() {
     // setLoading(true); // display loading text until api call is completed
 
     // API call to get all patterns
-    axiosAuth(`/yarns`, session)
+    axiosAuthGet(`/yarns`, session)
       .then((response) => {
         setYarns(response.data);
         setLoading(false);
@@ -81,7 +81,7 @@ export default function Page() {
     setLoading(true); // display loading text until api call is completed
     if (id) {
       // Fetch the pattern details using the id
-      axiosAuth(`/patterns/${id}`, session)
+      axiosAuthGet(`/patterns/${id}`, session)
         .then((response) => {
           setPattern(response.data.data);
           setForm({
@@ -95,11 +95,11 @@ export default function Page() {
             image_path: response.data.data.image_path,
           });
           setSelectedYarn(response.data.data.suggested_yarn?._id); // Set the selected yarn
-          setLoading(false)
+          setLoading(false);
         })
         .catch((e) => {
           console.error(e);
-          setLoading(false)
+          setLoading(false);
         })
         .finally(() => setLoading(false));
     }
@@ -185,8 +185,8 @@ export default function Page() {
 
     requiredFields.forEach((field) => {
       if (!form[field]) {
-      newError[field as keyof ErrorType] = "Field is required";
-      hasError = true;
+        newError[field as keyof ErrorType] = "Field is required";
+        hasError = true;
       }
     });
 
@@ -221,9 +221,8 @@ export default function Page() {
   // }, [form.image_path]); // Dependency array will run this when 'form' changes
 
   if (loading || !pattern) {
-    return <LoadingIndicator/>; // Replace with a spinner if needed
+    return <LoadingIndicator />; // Replace with a spinner if needed
   }
-
 
   return (
     <ScrollView>
@@ -291,7 +290,9 @@ export default function Page() {
           value={form.meterage}
           handleChangeText={handleChange("meterage")}
         />
-        {error.meterage && <Text style={{ color: "red" }}>{error.meterage}</Text>}
+        {error.meterage && (
+          <Text style={{ color: "red" }}>{error.meterage}</Text>
+        )}
 
         <View>
           {form.image_path ? (

@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 
-import { axiosAuth, axiosPost } from "@/api/axiosInstance";
+import { axiosAuthGet, axiosPost } from "@/api/axiosInstance";
 import { Button, Text, RadioButton, FAB } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 
@@ -66,7 +66,7 @@ export default function Page() {
     // setLoading(true); // display loading text until api call is completed
 
     // API call to get all patterns
-    axiosAuth(`/yarns`, session)
+    axiosAuthGet(`/yarns`, session)
       .then((response) => {
         setYarns(response.data);
         setLoading(false);
@@ -164,8 +164,8 @@ export default function Page() {
 
     requiredFields.forEach((field) => {
       if (!form[field]) {
-      newError[field as keyof ErrorType] = "Field is required";
-      hasError = true;
+        newError[field as keyof ErrorType] = "Field is required";
+        hasError = true;
       }
     });
 
@@ -257,7 +257,6 @@ export default function Page() {
           value={form.yarn_weight}
           handleChangeText={handleChange("yarn_weight")}
           error={error.yarn_weight}
-
         />
         {error.yarn_weight && (
           <Text style={{ color: "red" }}>{error.yarn_weight}</Text>
@@ -267,7 +266,6 @@ export default function Page() {
           value={form.gauge} // don't understand why theres a type error
           handleChangeText={handleChange("gauge")}
           error={error.gauge}
-
         />
         {error.gauge && <Text style={{ color: "red" }}>{error.gauge}</Text>}
 
@@ -277,8 +275,9 @@ export default function Page() {
           handleChangeText={handleChange("meterage")}
           error={error.meterage}
         />
-        {error.meterage && <Text style={{ color: "red" }}>{error.meterage}</Text>}
-
+        {error.meterage && (
+          <Text style={{ color: "red" }}>{error.meterage}</Text>
+        )}
 
         <View>
           {form.image_path ? (
@@ -308,11 +307,11 @@ export default function Page() {
         {/* <Text>{error}</Text> */}
         <Button onPress={handleSubmit}>Submit</Button>
         <View className="flex-1 items-end">
-          <FAB 
-          icon={"plus"}
-          size="medium"
-          variant="primary"
-          onPress={() => Alert.alert("Add another yarn")}
+          <FAB
+            icon={"plus"}
+            size="medium"
+            variant="primary"
+            onPress={() => Alert.alert("Add another yarn")}
           />
         </View>
       </SafeAreaView>

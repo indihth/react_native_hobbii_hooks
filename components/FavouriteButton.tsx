@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Animated } from "react-native";
 import { IconButton } from "react-native-paper";
-import { axiosPostFav, axiosAuth, axiosDelete } from "@/api/axiosInstance";
+import { axiosPostFav, axiosAuthGet, axiosDelete } from "@/api/axiosInstance";
 import { Alert } from "react-native";
 import { router } from "expo-router";
 
@@ -25,7 +25,7 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
       try {
         setIsLoading(true);
         // console.log("Checking if favourited:", resourceName, id);
-        const response = await axiosAuth(
+        const response = await axiosAuthGet(
           `/${resourceName}/favourites`,
           session
         );
@@ -63,8 +63,8 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
     let axoisCall = isSelected ? axiosDelete : axiosPostFav;
 
     try {
-    setIsSelected(!isSelected); // Immediately toggle the button for better UX, give error later if fails
-    //   const response = await axois("httpstatus.us/404"); // testing error handling
+      setIsSelected(!isSelected); // Immediately toggle the button for better UX, give error later if fails
+      //   const response = await axois("httpstatus.us/404"); // testing error handling
       const response = await axoisCall(
         `/${resourceName}/${id}/favourite`,
         session
@@ -73,7 +73,7 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
     } catch (error) {
       // toggle button status back if fails
       setIsSelected(originalSelected);
-    console.log("untoggled favoutite:");
+      console.log("untoggled favoutite:");
       Alert.alert("Error", "Failed to favourite resource");
       console.error("Failed to favourite resource:", error);
     }
@@ -97,6 +97,5 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
 
 export default FavouriteButton;
 function axois(arg0: string) {
-    throw new Error("Function not implemented.");
+  throw new Error("Function not implemented.");
 }
-

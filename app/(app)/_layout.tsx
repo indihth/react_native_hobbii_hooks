@@ -24,6 +24,7 @@ export default function AppLayout() {
     <Stack>
       {/* Renders everything inside of (tabs) using that _layout */}
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      {/* <Stack.Screen name="search/[query]" options={{ title: "Search results", headerShown: false }} /> */}
       <Stack.Screen name="+not-found" />
     </Stack>
     // <Stack/>

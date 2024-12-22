@@ -54,12 +54,12 @@ export default function TabLayout() {
           title: "Me",
         }}
       />
-      {/* <Tabs.Screen
-        name="patterns/[id]"
+      <Tabs.Screen
+        name="search"
         options={{
           href: null
         }}
-      /> */}
+      />
     </Tabs>
   );
 }

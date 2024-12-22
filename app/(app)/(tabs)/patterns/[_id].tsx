@@ -1,6 +1,6 @@
 import { API_URL } from "@/config";
 // import axios from "axios";
-import { axiosAuth } from "@/api/axiosInstance";
+import { axiosAuthGet } from "@/api/axiosInstance";
 import { PatternType } from "@/types/index";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -39,7 +39,7 @@ const PatternDetails = () => {
     setLoading(true); // display loading text until api call is completed
 
     // API call to get all patterns
-    axiosAuth(`/patterns/${_id}`, session)
+    axiosAuthGet(`/patterns/${_id}`, session)
       .then((response) => {
         setPattern(response.data.data);
         setLoading(false);
@@ -83,14 +83,21 @@ const PatternDetails = () => {
     <ScrollView>
       <SafeAreaView>
         <View className="flex-1">
-            <ImageBackground
+          <ImageBackground
             source={{ uri: `${pattern.image_path ?? [0]}` }}
             resizeMode="cover"
-            style={{ height: 500, justifyContent: "flex-end", alignItems: "flex-end" }}
-            >
-            <FavouriteButton resourceName="patterns" id={_id} session={session}/>
-
-            </ImageBackground>
+            style={{
+              height: 500,
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+            }}
+          >
+            <FavouriteButton
+              resourceName="patterns"
+              id={_id}
+              session={session}
+            />
+          </ImageBackground>
         </View>
 
         <View className="px-3 pt-3">
