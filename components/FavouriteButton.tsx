@@ -57,7 +57,6 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
 
   const toggleFavourite = async () => {
     const originalSelected = isSelected;
-    console.log("toggled favoutite:");
 
     // Toggling axios call based on current favourite status
     let axoisCall = isSelected ? axiosDelete : axiosPostFav;
@@ -69,11 +68,9 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
         `/${resourceName}/${id}/favourite`,
         session
       );
-      console.log("Response:", response.data);
     } catch (error) {
       // toggle button status back if fails
       setIsSelected(originalSelected);
-      console.log("untoggled favoutite:");
       Alert.alert("Error", "Failed to favourite resource");
       console.error("Failed to favourite resource:", error);
     }
@@ -96,6 +93,3 @@ const FavouriteButton: React.FC<FavouriteButtonProps> = ({
 };
 
 export default FavouriteButton;
-function axois(arg0: string) {
-  throw new Error("Function not implemented.");
-}

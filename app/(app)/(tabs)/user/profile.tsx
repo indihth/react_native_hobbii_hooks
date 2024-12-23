@@ -21,6 +21,9 @@ const Profile = () => {
         <Button onPress={handlePress} mode="contained">
           Logout
         </Button>
+        <Button onPress={() => router.push("/user/favourites")} mode="contained">
+          View Favourite Patterns
+        </Button>
       </View>
     </SafeAreaView>
   );

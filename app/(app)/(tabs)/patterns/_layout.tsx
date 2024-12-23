@@ -1,6 +1,6 @@
 import { Stack } from "expo-router/stack";
 
-export default function TabsLayout() {
+export default function PatternsLayout() {
   return (
     <Stack>
       {/* Optionally configure static options outside the route.*/}

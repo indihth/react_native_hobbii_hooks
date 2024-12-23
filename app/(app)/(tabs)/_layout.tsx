@@ -49,7 +49,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="user/profile"
+        name="user"
         options={{
           title: "Me",
         }}

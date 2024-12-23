@@ -26,7 +26,7 @@ const Search = () => {
       } finally {
         setLoading(false);
       }
-    };
+    }; 
 
     fetchPatterns();
   }

@@ -35,7 +35,6 @@ export const axiosPostFav = (
   endpoint: string,
   token?: string | null | undefined
 ) => {
-  console.log(`endpoint: ${endpoint}, token: ${token}`);
   return axiosInstance.post(
     endpoint,
     {},
