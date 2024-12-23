@@ -2,9 +2,8 @@ import { API_URL } from "@/config";
 // import axios from "axios";
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { PatternTypeID } from "@/types/index";
-import { Link, router, useLocalSearchParams, useRouter } from "expo-router";
-import React, { useEffect, useState, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { Link, router, useLocalSearchParams } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -27,24 +26,12 @@ import Pattern from "@/components/Pattern";
 
 const PatternDetails = () => {
   const { session } = useSession();
-  const router = useRouter();
-  const { _id, source } = useLocalSearchParams<{ _id: string, source: string }>();
+  const { _id } = useLocalSearchParams<{ _id: string }>();
 
   const [pattern, setPattern] = useState<PatternTypeID>(); // type of an array of Patterns
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
   const [index, setIndex] = useState(0);
-
-    // useFocusEffect(
-    //   useCallback(() => {
-    //     // replaces stack navigation when going back
-    //     if (source === "favourites") {
-    //       router.replace("/users/favourites");
-    //     } else {
-    //       router.replace("/patterns");
-    //     }
-    //   }, [source])
-    // );
 
   useEffect(() => {
     setLoading(true); // display loading text until api call is completed
@@ -61,7 +48,6 @@ const PatternDetails = () => {
         setLoading(false);
       });
   }, [_id, session]);
-  
 
   // Display while loading
   if (loading || !pattern) {

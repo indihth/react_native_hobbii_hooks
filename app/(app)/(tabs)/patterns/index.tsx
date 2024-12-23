@@ -67,7 +67,7 @@ const Patterns = () => {
       <Link href="/patterns/create" asChild>
         <Button>New Pattern</Button>
       </Link>
-      <PatternsList patterns={filteredPatterns} />
+      <PatternsList patterns={filteredPatterns} source="patterns"/>
 
       {/* <ProjectCard /> */}
     </View>
