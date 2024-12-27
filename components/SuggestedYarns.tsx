@@ -9,6 +9,7 @@ type Props = {
   suggested_yarn: SuggestedYarn | undefined;
 };
 const SuggestedYarns: React.FC<Props> = ({ suggested_yarn }) => {
+  // console.log(suggested_yarn);
   return (
     <View className="py-4">
       <Text variant="titleMedium" className="pb-3">
@@ -22,11 +23,7 @@ const SuggestedYarns: React.FC<Props> = ({ suggested_yarn }) => {
           value={`${fiber.percentage}%`}
         />
       ))}
-      {/* <Button><Link href={{ 
-                pathname: '/yarns/[_id]',
-                params: { id: suggested_yarn?._id }
-            }}>View Yarn</Link></Button> */}
-      <Link href={`/yarns/${suggested_yarn?._id}`} asChild>
+      <Link push href={`/yarns/${suggested_yarn?._id}`} asChild>
         <Button>View Yarn</Button>
       </Link>
     </View>

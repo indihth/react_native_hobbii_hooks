@@ -30,7 +30,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ query, setQuery }) => {
       />
 
       <TouchableOpacity onPress={handlePress}>
-        <Icon source="search" size={20} color="#CDCDE0" />
+        {/* <Icon source="search" size={20} color="#CDCDE0" /> */}
         {/* <Image source={icons.search} className="w-5 h-5" resizeMode="contain" /> */}
       </TouchableOpacity>
     </View>

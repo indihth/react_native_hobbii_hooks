@@ -18,7 +18,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/pp.jpeg",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.hobbii_hooks"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,6 @@
     ],
     "experiments": {
       "typedRoutes": true
-    },
+    }
   }
 }

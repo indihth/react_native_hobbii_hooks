@@ -12,15 +12,15 @@ import { useSession } from "@/contexts/AuthContext";
 
 type PatternProps = {
   pattern: PatternTypeID;
+  source?: string;
 };
 
-const Pattern: React.FC<PatternProps> = ({ pattern }) => {
-    const { session } = useSession();
-    // const id = pattern._id;
-  
+const Pattern: React.FC<PatternProps> = ({ pattern, source = "pattern" }) => {
+  const { session } = useSession();
+  // const id = pattern._id;
+
   const [index, setIndex] = useState(0);
   const layout = useWindowDimensions();
-
   // Tab view for Pattern Information and Suggested Yarns
   const InfoRoute = () => (
     <View className="py-4">
@@ -72,7 +72,7 @@ const Pattern: React.FC<PatternProps> = ({ pattern }) => {
         </View>
         {/* Pass id as a url query */}
         <View className="flex-row">
-          <Link push href={`/patterns/edit?id=${pattern._id}`} asChild>
+          <Link push href={`/${source}/edit?id=${pattern._id}`} asChild>
             <Button>Edit Pattern</Button>
           </Link>
           <DeleteButton
@@ -84,6 +84,8 @@ const Pattern: React.FC<PatternProps> = ({ pattern }) => {
           {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
           {/* onDelete={() => router.push("/patterns")} /> */}
         </View>
+        {/* <SuggestedYarns suggested_yarn={pattern?.suggested_yarn} /> */}
+        
         <TabView
           navigationState={{ index, routes }}
           // renderScene={renderScene}

@@ -16,7 +16,7 @@ import PatternsList from "@/components/PatternsList";
 // Placeholder image
 // import placeholderImage from '@/assets/images/placeholderImage'
 
-const Patterns = () => {
+const SearchPage = () => {
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Patterns
   const [filteredPatterns, setFilteredPatterns] = useState<PatternTypeID[]>([]);
   const [query, setQuery] = useState<string>("");
@@ -66,7 +66,7 @@ const Patterns = () => {
         options={{
           title: 'Search',
           headerTitle: (props) => (
-            <View className="flex-1 flex-row items-center">
+            <View style={{ flex: 1, flexDirection: 'row' }}>
               <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{props.children}</Text>
             </View>
           ),
@@ -80,12 +80,8 @@ const Patterns = () => {
           },
         }}
       />
-      {/* <SearchInput query={query} setQuery={setQuery} /> */}
-
-      <Link href="/patterns/create" asChild>
-        <Button>New Pattern</Button>
-      </Link>
-      <PatternsList patterns={filteredPatterns} source="patterns"/>
+     
+      <PatternsList patterns={filteredPatterns} source="search/patterns"/>
 
       {/* <ProjectCard /> */}
     </View>
@@ -93,4 +89,4 @@ const Patterns = () => {
   );
 };
 
-export default Patterns;
+export default SearchPage;

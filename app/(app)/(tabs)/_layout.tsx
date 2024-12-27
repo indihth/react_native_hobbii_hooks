@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 
@@ -27,7 +27,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          href: null
+          href: null,
         }}
       />
       <Tabs.Screen
@@ -42,6 +42,12 @@ export default function TabLayout() {
           title: "Projects",
         }}
       />
+        <Tabs.Screen
+          name="search"
+          options={{
+            title: "Search",
+          }}
+        />
       <Tabs.Screen
         name="yarns"
         options={{
@@ -54,12 +60,19 @@ export default function TabLayout() {
           title: "Me",
         }}
       />
-      <Tabs.Screen
-        name="search"
-        options={{
-          href: null
-        }}
-      />
+
+      {/* Nested stack layout */}
+      <Stack>
+        <Stack.Screen
+          name="patterns/[id]"
+          options={{ title: "Pattern Details" }}
+        />
+        <Stack.Screen name="yarns/[id]" options={{ title: "Yarn Details" }} />
+        {/* <Stack.Screen
+          name="patterns/index"
+          options={{ title: "Pattern Details" }}
+        /> */}
+      </Stack>
     </Tabs>
   );
 }

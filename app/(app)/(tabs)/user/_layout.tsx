@@ -9,9 +9,10 @@ export default function UserLayout({ segment }: { segment: string }) {
     // />
     >
       <Stack.Screen name="index" options={{ title: "My Profile" }} />
-      <Stack.Screen name="favourites" options={{ title: "My favourites" }} />
+      <Stack.Screen name="patterns" options={{ title: "My Patterns", headerShown: false}} />
+      <Stack.Screen name="projects" options={{ title: "My Projects" }} />
+      <Stack.Screen name="favourites" options={{ headerShown: false }} />
       <Stack.Screen name="archived" options={{ title: "Archived" }} />
-      <Stack.Screen name="[_id]" options={{ title: "Favourited Pattern" }} />
     </Stack>
   );
 }

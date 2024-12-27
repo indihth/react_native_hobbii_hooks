@@ -98,7 +98,7 @@ export default function LoginForm() {
                 title="Email"
                 value={form.email}
                 handleChangeText={handleChange("email")}
-                keyboardType="email-address"
+                // keyboardType="email-address"
               />
               <FormField
                 title="Password"

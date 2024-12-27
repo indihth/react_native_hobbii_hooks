@@ -66,7 +66,7 @@ const Patterns = () => {
         options={{
           title: 'Search',
           headerTitle: (props) => (
-            <View className="flex-1 flex-row items-center">
+            <View style={{ flex: 1, flexDirection: 'row' }}>
               <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{props.children}</Text>
             </View>
           ),
@@ -80,7 +80,7 @@ const Patterns = () => {
           },
         }}
       />
-      {/* <SearchInput query={query} setQuery={setQuery} /> */}
+      <SearchInput query={query} setQuery={setQuery} />
 
       <Link href="/patterns/create" asChild>
         <Button>New Pattern</Button>

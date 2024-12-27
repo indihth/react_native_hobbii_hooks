@@ -42,9 +42,10 @@ export interface SuggestedYarn {
   _id: string;
   title: string;
   fibers?: Fiber[];
-};
+}
 
 export interface Fiber {
   fiber_name: string;
   percentage: number;
-};
+}
+

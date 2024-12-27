@@ -21,7 +21,6 @@ export const axiosPost = (
   formData?: object,
   token?: string | null | undefined
 ) => {
-  console.log(`endpoint: ${endpoint}, token: ${token}`);
   return axiosInstance.post(endpoint, formData, {
     headers: {
       // If token was passed, set auth header, otherwise leave undefined
