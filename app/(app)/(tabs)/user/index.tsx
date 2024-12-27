@@ -38,15 +38,6 @@ const Profile = () => {
             </Button>
           )
         )}
-        {/* <Button onPress={() => router.push("/user/projects")} mode="contained">
-          My Projects
-        </Button> */}
-        {/* <Button onPress={() => router.push("/user/favourites")} mode="contained">
-          View Favourite Patterns
-        </Button>
-        <Button onPress={() => router.push("/user/archived")} mode="contained">
-          View Archived Patterns
-        </Button> */}
       </View>
     </SafeAreaView>
   );

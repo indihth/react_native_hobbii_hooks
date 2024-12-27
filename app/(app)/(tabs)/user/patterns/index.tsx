@@ -42,8 +42,6 @@ const Patterns = () => {
     }
   };
 
-  console.log(resource);
-
   useEffect(() => {
     const fetchPatterns = async () => {
       const axiosUrl = getAxiosUrl(resource);
