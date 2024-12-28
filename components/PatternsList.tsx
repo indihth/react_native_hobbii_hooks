@@ -22,7 +22,7 @@ const PatternsList: React.FC<PatternsListProps> = ({ patterns, source = "pattern
           onPress={() =>
             // router.push(`/${source}/${item._id}`)
             router.push({
-              pathname: `/${source}/[_id]` as RelativePathString,
+              pathname: `/feed/[_id]` as RelativePathString,
               params: { _id: item._id }
             })
           }

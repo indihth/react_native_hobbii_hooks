@@ -9,6 +9,7 @@ import { TabView } from "react-native-tab-view";
 import DetailElement from "./DetailElement";
 import SuggestedYarns from "./SuggestedYarns";
 import { useSession } from "@/contexts/AuthContext";
+import Tabs from "./Tabs";
 
 type PatternProps = {
   pattern: PatternTypeID;
@@ -20,7 +21,13 @@ const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
   // const id = pattern._id;
 
   const [index, setIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState("Pattern");
   const layout = useWindowDimensions();
+
+  const handleTabChange = (tab: any) => {
+    setActiveTab(tab);
+  };
+
   // Tab view for Pattern Information and Suggested Yarns
   const InfoRoute = () => (
     <View className="py-4">
@@ -84,26 +91,10 @@ const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
           {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
           {/* onDelete={() => router.push("/patterns")} /> */}
         </View>
-        {/* <SuggestedYarns suggested_yarn={pattern?.suggested_yarn} /> */}
-        
-        <TabView
-          navigationState={{ index, routes }}
-          // renderScene={renderScene}
-          // Prevent unnecessary re-renders
-          renderScene={({ route }) => {
-            switch (route.key) {
-              case "info":
-                return <InfoRoute />;
-              case "yarns":
-                return <YarnsRoute />;
-              default:
-                return null;
-            }
-          }}
-          onIndexChange={setIndex}
-          initialLayout={{ width: layout.width }}
-          // initialLayout={{ width: Dimensions.get('window').width }}
-        />
+      
+        <Tabs onTabChange={handleTabChange} />
+        {activeTab === "Pattern" ? <InfoRoute /> : <YarnsRoute />}
+
       </View>
     </View>
   );

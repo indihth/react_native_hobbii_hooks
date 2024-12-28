@@ -6,12 +6,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 
 export default function AuthLayout() {
-  // const { session, isLoading } = useSession();
+  const { session, isLoading } = useSession();
 
-  // // You can keep the splash screen open, or render a loading screen like we do here.
-  // if (isLoading) {
-  //   return <LoadingIndicator/>; // Replace with a spinner if needed
-  // }
+  // You can keep the splash screen open, or render a loading screen like we do here.
+  if (isLoading) {
+    return <LoadingIndicator/>; // Replace with a spinner if needed
+  }
 
   // // Only require authentication within the (app) group's layout as users
   // // need to be able to access the (auth) group and sign in again.

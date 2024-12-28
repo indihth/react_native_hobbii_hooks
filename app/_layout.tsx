@@ -29,36 +29,11 @@ const InitialLayout = () => {
   const segments = useSegments();
   const router = useRouter();
 
-  // You can keep the splash screen open, or render a loading screen like we do here.
-  // if (isLoading) {
-  //   return <LoadingIndicator/>; // Replace with a spinner if needed
-  // }
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inTabsGroup = segments[0] === '(auth)';
-
-    if (session && !inTabsGroup) {
-      router.replace('/(auth)/(tabs)/feed' as any);
-    } else if (!session && inTabsGroup) {
-      router.replace('/(public)' as any);
-    }
-  }, [session]);
-
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
-  // if (!session) {
-  //   // On web, static rendering will stop here as the user is not authenticated
-  //   // in the headless Node process that the pages are rendered in.
-  //   return <Redirect href="/(public)/index" />;
-  // }
-
-
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
 
   useEffect(() => {
     if (loaded) {
@@ -66,12 +41,21 @@ const InitialLayout = () => {
     }
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
+  useEffect(() => {
+    
+    if (!loaded) return;
+
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (session && !inAuthGroup) {
+      router.replace('/(auth)/(tabs)/feed' as any);
+    } else if (!session && inAuthGroup) {
+      router.replace('/(public)' as any);
+    }
+  }, [session]);
 
 
-  return  <Stack screenOptions={{ headerShown: false }}/>;
+  return  <Slot/>;
 }
 
 const RootLayout = () => {

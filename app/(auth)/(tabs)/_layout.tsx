@@ -94,7 +94,7 @@ export default function TabLayout() {
           tabPress: (e) => {
             e.preventDefault(); // stops the create page from being navigated to
             // Haptics.selectionAsync();
-            router.push('/(modal)/create') // opens a modal view with the create form
+            router.push('/(modal)/create' as any) // opens a modal view with the create form
           }
          }}
       />
