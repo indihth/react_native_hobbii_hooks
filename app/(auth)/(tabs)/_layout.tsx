@@ -2,43 +2,45 @@ import { Stack, Tabs } from "expo-router";
 import React from "react";
 import { Platform, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
+import { router } from 'expo-router';
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSession } from "@/contexts/AuthContext";
 
+const styles = StyleSheet.create({
+  iconContainer: {
+    backgroundColor: Colors.itemBackground,
+    padding: 10,
+    borderRadius: 8,
+  },
+})
+
+const CreateTabIcon = ({
+  color,
+  size,
+  focused,
+}: {
+  color: string;
+  size: number;
+  focused: boolean;
+}) => {
+  return (
+    <View style={styles.iconContainer}>
+      <Ionicons
+        name={focused ? "add" : "add-outline"}
+        size={24}
+        color="black"
+      />
+    </View>
+  );
+};
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { session, signOut } = useSession();
 
-  const styles = StyleSheet.create({
-    iconContainer: {
-      backgroundColor: Colors.itemBackground,
-      padding: 10,
-      borderRadius: 8,
-    },
-  })
-
-  const CreateTabIcon = ({
-    color,
-    size,
-    focused,
-  }: {
-    color: string;
-    size: number;
-    focused: boolean;
-  }) => {
-    return (
-      <View style={styles.iconContainer}>
-        <Ionicons
-          name={focused ? "add" : "add-outline"}
-          size={24}
-          color="black"
-        />
-      </View>
-    );
-  };
 
   // Defines layout and look for tabs section
   return (
@@ -87,6 +89,14 @@ export default function TabLayout() {
             <CreateTabIcon color={color} size={size} focused={focused} />
           ),
         }}
+        // stops the icon from navigating to the create screen, allows for other actions
+        listeners={{ 
+          tabPress: (e) => {
+            e.preventDefault(); // stops the create page from being navigated to
+            // Haptics.selectionAsync();
+            router.push('/(modal)/create') // opens a modal view with the create form
+          }
+         }}
       />
       <Tabs.Screen
         name="favorites"
@@ -111,6 +121,11 @@ export default function TabLayout() {
               size={24}
               color="black"
             />
+          ),
+          headerRight: () => (
+            <TouchableOpacity onPress={signOut}>
+              <Ionicons name="log-out" size={24} color="black" />
+            </TouchableOpacity>
           ),
         }}
       />

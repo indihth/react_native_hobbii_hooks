@@ -1,6 +1,8 @@
 import { Redirect, Stack } from "expo-router";
 import { useSession } from "@/contexts/AuthContext";
 import LoadingIndicator from "@/components/LoadingIndicator";
+import { TouchableOpacity } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 
 export default function AuthLayout() {
@@ -28,6 +30,14 @@ export default function AuthLayout() {
      }}>
       {/* Renders everything inside of (tabs) using that _layout */}
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="(modal)/create" options={{ 
+        presentation: "modal", // shows as model instead of new screen
+        headerRight: () => (
+          <TouchableOpacity>
+            <Ionicons name="ellipsis-horizontal-circle" size={24} />
+          </TouchableOpacity>
+        )
+       }} />
       {/* <Stack.Screen name="(OLDtabs)" options={{ headerShown: false }} /> */}
       {/* <Stack.Screen name="search/[query]" options={{ title: "Search results", headerShown: false }} /> */}
       {/* <Stack.Screen name="+not-found" /> */}
