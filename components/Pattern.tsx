@@ -15,7 +15,7 @@ type PatternProps = {
   source?: string;
 };
 
-const Pattern: React.FC<PatternProps> = ({ pattern, source = "pattern" }) => {
+const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
   const { session } = useSession();
   // const id = pattern._id;
 

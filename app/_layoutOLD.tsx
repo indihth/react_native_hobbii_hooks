@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack, Slot, Redirect, useSegments, useRouter } from "expo-router";
+import { Stack, Slot, Redirect } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -17,43 +17,12 @@ import { SessionProvider, useSession } from "@/contexts/AuthContext";
 // Import your global CSS file
 import "../global.css";
 import { SafeAreaView } from "react-native-safe-area-context";
-import LoadingIndicator from "@/components/LoadingIndicator";
 
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-const InitialLayout = () => {
-
-  const { session, isLoading } = useSession();
-  const segments = useSegments();
-  const router = useRouter();
-
-  // You can keep the splash screen open, or render a loading screen like we do here.
-  // if (isLoading) {
-  //   return <LoadingIndicator/>; // Replace with a spinner if needed
-  // }
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const inTabsGroup = segments[0] === '(auth)';
-
-    if (session && !inTabsGroup) {
-      router.replace('/(auth)/(tabs)/feed' as any);
-    } else if (!session && inTabsGroup) {
-      router.replace('/(public)' as any);
-    }
-  }, [session]);
-
-  // Only require authentication within the (app) group's layout as users
-  // need to be able to access the (auth) group and sign in again.
-  // if (!session) {
-  //   // On web, static rendering will stop here as the user is not authenticated
-  //   // in the headless Node process that the pages are rendered in.
-  //   return <Redirect href="/(public)/index" />;
-  // }
-
+export default function RootLayout() {
 
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -70,19 +39,12 @@ const InitialLayout = () => {
     return null;
   }
 
-
-  return  <Stack screenOptions={{ headerShown: false }}/>;
-}
-
-const RootLayout = () => {
-
-
   return (
     // <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <PaperProvider>
         <SessionProvider>
           <SafeAreaView className="flex-1 justify-center">
-            <InitialLayout />
+            <Slot />
           </SafeAreaView>
         </SessionProvider>
         <StatusBar style="auto" />
@@ -90,5 +52,3 @@ const RootLayout = () => {
     // </ThemeProvider>
   );
 }
-
-export default RootLayout;

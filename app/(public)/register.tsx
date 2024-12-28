@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, router } from "expo-router";
 import { useSession } from "@/contexts/AuthContext";
-import { API_URL } from "../config";
+import { API_URL } from "../../config";
 
 // Paper Components
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,8 +17,9 @@ import FormField from "@/components/FormField";
 
 const background = require("@/assets/images/pastelBG.jpeg");
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [form, setForm] = useState({
+    full_name: "",
     email: "",
     password: "",
   });
@@ -38,34 +39,84 @@ export default function LoginForm() {
 
   const handlePress = (e: any) => {
     // Popup alert if email or password are empty
-    if (form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please enter a valid email and password");
+    if (form.full_name === "" || form.email === "" || form.password === "") {
+      Alert.alert("Error", "Please enter a valid name, email and password");
       return;
     }
 
     setSubmitting(true);
-
+    // regiser user
     axios
-      .post(`${API_URL}/users/login`, {
+      .post(`${API_URL}/users/register`, {
         // can send entire 'form' or use an object for customisation
+        full_name: form.full_name,
         email: form.email,
         password: form.password,
         // Can explude fields that shouldn't be sent to server
       })
       .then((response) => {
-        signIn(response.data.token);
-        console.log(`Response:
-              ${response.data.token}`);
-        //   Send user to next screen after successful login
-        router.replace("/");
+        setSubmitting(true)
+        // One successful registration, log user in
+            axios
+              .post(`${API_URL}/users/login`, {
+                // can send entire 'form' or use an object for customisation
+                email: form.email,
+                password: form.password,
+                // Can explude fields that shouldn't be sent to server
+              })
+              .then((response) => {
+                signIn(response.data.token);
+                console.log(`Response:
+                      ${response.data.token}`);
+                //   Send user to next screen after successful login
+                router.replace("/");
+              })
+              .catch((e) => {
+                console.log(e);
+                Alert.alert("Error", e.response.data.message);
+                setError(e.response.data.message);
+              })
+              .finally(() => {
+                setSubmitting(false);
+              });
       })
       .catch((e) => {
-        console.log(e);
-        Alert.alert("Error", e.response.data.message);
-        setError(e.response.data.message);
+        console.log(e.response.data);
+        const errorMessage = e.response.data.message;
+
+        if (errorMessage.includes("email_1 dup key")) {
+          Alert.alert("Error", "Email address taken, please try another");
+          setForm({
+            full_name: form.full_name,
+            email: "",
+            password: form.password,
+          });
+          setError("Email already exists");
+          return;
+        } 
+        // else if (errorMessage.includes("Invalid email")) {
+        //   Alert.alert("Error", "Invalid email format");
+        //   setForm({
+        //     full_name: form.full_name,
+        //     email: "",
+        //     password: form.password,
+        //   });
+        //   setError("Invalid email format");
+        // } else if (errorMessage.includes("Invalid password")) {
+        //   Alert.alert("Error", "Password must be at least 6 characters");
+        //   setForm({
+        //     full_name: form.full_name,
+        //     email: form.email,
+        //     password: "",
+        //   });
+        //   setError("Invalid password");
+        // } else {
+        //   Alert.alert("Error", errorMessage);
+        //   setError(errorMessage);
+        // }
 
         // reset password field if auth failed
-        setForm({ email: form.email, password: "" });
+        setForm({ full_name: form.full_name, email: form.email, password: "" });
       })
       .finally(() => {
         setSubmitting(false);
@@ -95,10 +146,15 @@ export default function LoginForm() {
 
             <View className="flex-1 justify-center">
               <FormField
+                title="Name"
+                value={form.full_name}
+                handleChangeText={handleChange("full_name")}
+              />
+              <FormField
                 title="Email"
                 value={form.email}
                 handleChangeText={handleChange("email")}
-                // keyboardType="email-address"
+                keyboardType="email-address"
               />
               <FormField
                 title="Password"
@@ -115,17 +171,8 @@ export default function LoginForm() {
               </Text>
 
               <Button onPress={handlePress} mode="contained">
-                Login
+                Register
               </Button>
-
-              <View>
-                <Text variant="bodySmall" className="text-center text-white mt-5">
-                  Don't have an account?
-                </Text>
-                <Link href="/register" className="text-center text-white">
-                  Sign up
-                </Link>
-              </View>
             </View>
 
             {/* sets android status bar colors, time, wifi, battery */}
