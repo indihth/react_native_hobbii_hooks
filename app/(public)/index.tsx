@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, router } from "expo-router";
-import { useSession } from "@/contexts/AuthContext";
+import { useSession, useAuth } from "@/contexts/AuthContext";
 import { API_URL } from "../../config";
 
 // Paper Components
@@ -27,6 +27,7 @@ export default function LoginForm() {
   const [isSubmitting, setSubmitting] = useState<boolean>(false);
 
   const { signIn } = useSession();
+  const { authUserId, setAuthUserId } = useAuth();
 
   // Higher-order function, passing in a field name to dynamically set the state
   const handleChange = (field: string) => (value: string) => {
@@ -53,10 +54,8 @@ export default function LoginForm() {
         // Can explude fields that shouldn't be sent to server
       })
       .then((response) => {
-        signIn(response.data.token);
-        console.log(`Response:
-              ${response.data.token}`);
-        //   Send user to next screen after successful login
+        signIn(response.data);
+        // setAuthUserId(response.data.user_id); // Save user ID in context
         router.replace("/feed")
       })
       .catch((e) => {

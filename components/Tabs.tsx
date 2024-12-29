@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 type TabsProps = {
+  tabTitles: string[]; // dynamic define tabs
+  defaultTab?: string; // optional defning of default tab
   onTabChange: (tab: string) => void;
 };
 
-const Tabs = ({ onTabChange }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState('Pattern');
+const Tabs = ({ tabTitles, defaultTab = tabTitles[0], onTabChange }: TabsProps) => {
+  const [activeTab, setActiveTab] = useState(defaultTab); // default to first string in tabTitles
 
   const handleTabPress = (tab: string) => {
     setActiveTab(tab);
@@ -16,7 +18,7 @@ const Tabs = ({ onTabChange }: TabsProps) => {
 
   return (
     <View style={styles.container}>
-      {['Pattern', 'Yarn'].map((tab) => (
+      {tabTitles.map((tab) => (
         <TouchableOpacity
           key={tab}
           style={[styles.tab, activeTab === tab && styles.activeTab]}

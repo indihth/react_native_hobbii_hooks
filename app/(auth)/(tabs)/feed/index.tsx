@@ -1,7 +1,9 @@
 import axios from "axios";
 import { axiosAuthGet } from "@/api/axiosInstance";
-
 import { useEffect, useState } from "react";
+import { useSession, useAuth } from "@/contexts/AuthContext";
+
+
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProjectCard from "@/components/Pattern";
@@ -17,6 +19,9 @@ import PatternsList from "@/components/PatternsList";
 // import placeholderImage from '@/assets/images/placeholderImage'
 
 const Patterns = () => {
+  const { userId } = useAuth();
+
+
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Patterns
   const [filteredPatterns, setFilteredPatterns] = useState<PatternTypeID[]>([]);
   const [query, setQuery] = useState<string>("");

@@ -51,7 +51,6 @@ export const axiosPut = (
   formData: object,
   token?: string | null
 ) => {
-  console.log(`endpoint: ${endpoint}, token: ${token}`);
   return axiosInstance.put(endpoint, formData, {
     headers: {
       // If token was passed, set auth header, otherwise leave undefined
@@ -65,7 +64,6 @@ export const axiosDelete = (
   endpoint: string,
   token?: string | null | undefined
 ) => {
-  console.log(`endpoint: ${endpoint}, token: ${token}`);
   return axiosInstance.delete(endpoint, {
     headers: {
       // If token was passed, set auth header, otherwise leave undefined
