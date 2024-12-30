@@ -11,7 +11,7 @@ type PatternsListProps = {
 
 const PatternsList: React.FC<PatternsListProps> = ({ patterns, source = "patterns" }) => {
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
-  const tempImage = "./placeholderImage.png";
+  const tempImage = require("@/assets/images/placeholderImage.png");
 
   return (
     <FlatList

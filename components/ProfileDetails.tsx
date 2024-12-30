@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useAuth, useSession } from "@/contexts/AuthContext";
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { UserType } from "@/types/UserType";
-import { Link } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 
 type ProfileDetailsProps = {
   userId?: string | null;
@@ -18,26 +18,36 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
   const isSelf = userId === authUserId;
 
   const tempImage = require("@/assets/images/swift.jpg");
-  console.log(isSelf);
-  useEffect(() => {
-    setLoading(true); // display loading text until api call is completed
 
-    // API call to get all patterns
-    const fetchData = async () => {
-      try {
-        const response = await axiosAuthGet(`/users/${userId}`, session);
-        setUser(response.data.data);
+  const fetchData = async () => {
+    try {
+      setLoading(true); // display loading text until api call is completed
 
-        // console.log(response);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const response = await axiosAuthGet(`/users/${userId}`, session);
+      setUser(response.data.data);
 
+      // console.log(response);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+//   useEffect(() => {
+//     fetchData();
+//   }, [userId]);
+
+// Not the best practice but shows updated user info after update.
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [userId])
+  );
+
+  const handleRefresh = () => {
     fetchData();
-  }, [userId]);
+  };
 
   return (
     <View className="" style={styles.container}>
@@ -62,7 +72,18 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
         {isSelf && (
           <>
             <Link
-              href="/(modal)/edit-profile" asChild
+              href={{
+                pathname: "/(auth)/(modal)/edit-profile",
+                params: {
+                  userId,
+                  full_name: user?.full_name,
+                  location: user?.location,
+                  about_me: user?.about_me,
+                  website_url: user?.website_url,
+                  image_path: user?.image_path,
+                },
+              }}
+              asChild
             >
               <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Edit profile</Text>
@@ -88,6 +109,7 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -1,4 +1,4 @@
-import { Redirect, router, Stack } from "expo-router";
+import { Redirect, router, Stack, useRouter } from "expo-router";
 import { useSession } from "@/contexts/AuthContext";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { TouchableOpacity, Text } from "react-native";
@@ -7,6 +7,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function AuthLayout() {
   const { session, isLoading } = useSession();
+  const router = useRouter();
 
   // You can keep the splash screen open, or render a loading screen like we do here.
   // if (isLoading) {
@@ -30,6 +31,17 @@ export default function AuthLayout() {
      }}>
       {/* Renders everything inside of (tabs) using that _layout */}
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+      {/* <Stack.Group screenOptions={({navigation}) => ({
+          ...TransitionPresets.ModalSlideFromBottomIOS,
+          gestureEnabled: true,
+          presentation: "modal",
+          cardStyle: {marginTop: 10, borderTopStartRadius: 20, borderTopEndRadius: 20}
+
+        })}> */}
+
+     
+      
       <Stack.Screen name="(modal)/create" options={{ 
         presentation: "modal", // shows as model instead of new screen
         headerRight: () => (
@@ -41,10 +53,11 @@ export default function AuthLayout() {
        <Stack.Screen
         name="(modal)/edit-profile"
         options={{
-          presentation: 'modal',
+          presentation: 'modal', // doesn't actually show modal window currently
+          headerShown: true,
           title: 'Edit profile',
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.dismiss()}>
+            <TouchableOpacity onPress={() => router.back()}>
               <Text>Cancel</Text>
             </TouchableOpacity>
           ),

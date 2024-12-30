@@ -11,7 +11,8 @@ interface FormFieldProps {
   error?: string;
   multiline?: boolean;
   numberOfLines?: number;
-  otherStyles?: object;
+  otherStyles?: string;
+  className?: string;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -22,6 +23,7 @@ const FormField: React.FC<FormFieldProps> = ({
   otherStyles,
   keyboardType,
   error,
+  className,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -36,6 +38,7 @@ const FormField: React.FC<FormFieldProps> = ({
           onChangeText={handleChangeText}
           secureTextEntry={title === "Password" && !showPassword}
           error={error ? true : false}
+          className={className}
           {...props}
         />
       </View>

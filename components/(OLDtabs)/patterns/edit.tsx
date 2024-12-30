@@ -238,7 +238,7 @@ export default function Page() {
         console.log(response);
         setLoading(false);
         // redirects to view pattern, replace removes previous stack, can't go back to 'create'
-        router.replace(`/patterns/${id}`);
+        router.replace(`/patterns/${id}` as any); // need to type properly
       })
       .catch((e: AxiosError) => {
         console.log(e.message);
