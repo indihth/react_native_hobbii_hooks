@@ -63,7 +63,6 @@ const EditProfile = () => {
     <View>
       <Stack.Screen
         options={{
-          headerTitleAlign: "center",
           headerRight: () => (
             <TouchableOpacity onPress={updateProfile}>
               <Text>Done</Text>
@@ -78,6 +77,7 @@ const EditProfile = () => {
           title="Full Name"
           value={fullNameState}
           handleChangeText={setFullNameState}
+          error="true"
         />
         <FormField
           title="About Me"

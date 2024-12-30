@@ -2,7 +2,7 @@ import { Stack, Tabs } from "expo-router";
 import React from "react";
 import { Platform, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
-import { router } from 'expo-router';
+import { router } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -10,37 +10,23 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSession } from "@/contexts/AuthContext";
 
 const styles = StyleSheet.create({
-  iconContainer: {
+  createIconContainer: {
+    // backgroundColor: "#fff",
     backgroundColor: Colors.itemBackground,
     padding: 10,
     borderRadius: 8,
   },
-})
+});
 
-const CreateTabIcon = ({
-  color,
-  size,
-  focused,
-}: {
-  color: string;
-  size: number;
-  focused: boolean;
-}) => {
-  return (
-    <View style={styles.iconContainer}>
-      <Ionicons
-        name={focused ? "add" : "add-outline"}
-        size={24}
-        color="black"
-      />
-    </View>
-  );
-};
+const CreateTabIcon = ({ color, size }: { color: string; size: number }) => (
+  <View style={styles.createIconContainer}>
+    <Ionicons name="add" size={size} color="black"/>
+  </View>
+);
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { session, signOut } = useSession();
-
 
   // Defines layout and look for tabs section
   return (
@@ -60,8 +46,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "home" : "home-outline"}
-              size={24}
-              color="black"
+              size={size}
+              color={color}
             />
           ),
         }}
@@ -73,8 +59,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "search" : "search-outline"}
-              size={24}
-              color="black"
+              size={size}
+              color={color}
             />
           ),
           headerShown: false,
@@ -85,18 +71,20 @@ export default function TabLayout() {
         name="create"
         options={{
           title: "Create",
-          tabBarIcon: ({ color, size, focused }) => (
-            <CreateTabIcon color={color} size={size} focused={focused} />
+          tabBarIcon: ({ color, size }) => (
+            // <View style={styles.createIconContainer}>
+            <Ionicons name="add-circle-outline" size={size} color={color}/>
+          // </View>
           ),
         }}
         // stops the icon from navigating to the create screen, allows for other actions
-        listeners={{ 
+        listeners={{
           tabPress: (e) => {
             e.preventDefault(); // stops the create page from being navigated to
             // Haptics.selectionAsync();
-            router.push('/(modal)/create' as any) // opens a modal view with the create form
-          }
-         }}
+            router.push("/(modal)/create" as any); // opens a modal view with the create form
+          },
+        }}
       />
       <Tabs.Screen
         name="favorites"
@@ -105,8 +93,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}
-              size={24}
-              color="black"
+              size={size}
+              color={color}
             />
           ),
         }}
@@ -119,8 +107,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}
-              size={24}
-              color="black"
+              size={size}
+              color={color}
             />
           ),
           // headerRight: () => (
