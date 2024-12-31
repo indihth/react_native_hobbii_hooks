@@ -27,14 +27,16 @@ export interface PatternTypeID extends PatternType {
   _id: string;
 }
 
-export interface YarnType {
-  title: string;
-  description: string;
-  image_path: string;
-}
-
-export interface YarnTypeID extends PatternType {
+export interface YarnTypeID {
   _id: string;
+  title: string;
+  colorways: string[];
+  weight?: string;
+  meterage?: string;
+  needle_size?: string;
+  fibers?: Fiber[];
+  description?: string;
+  image_path?: string;
 }
 
 export interface SuggestedYarn {

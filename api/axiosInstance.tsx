@@ -16,18 +16,29 @@ export const axiosAuthGet = (endpoint: string, token?: string | null) => {
   });
 };
 
-export const axiosPost = (
+export const axiosPost = async (
   endpoint: string,
   formData?: object,
   token?: string | null | undefined
 ) => {
-  return axiosInstance.post(endpoint, formData, {
-    headers: {
-      // If token was passed, set auth header, otherwise leave undefined
-      Authorization: token ? `Bearer ${token}` : undefined,
-      "content-type": "multipart/form-data",
-    },
-  });
+  try {
+    const response = await axiosInstance
+      .post(endpoint, formData, {
+        headers: {
+          // If token was passed, set auth header, otherwise leave undefined
+          Authorization: token ? `Bearer ${token}` : undefined,
+          "content-type": "multipart/form-data",
+        },
+      });
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return await Promise.reject(error.response?.data || error.message);
+      // return await Promise.reject(error.response || error.message);
+    } else {
+      return await Promise.reject(error);
+    }
+  }
 };
 
 export const axiosPostFav = (

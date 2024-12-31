@@ -14,15 +14,20 @@ import Tabs from "./Tabs";
 type PatternProps = {
   pattern: PatternTypeID;
   source?: string;
+  showBackButton?: boolean;
 };
 
-const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
+const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns", showBackButton = false }) => {
   const { session } = useSession();
   // const id = pattern._id;
 
   const [index, setIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("Pattern");
   const layout = useWindowDimensions();
+
+  const tabTitles = ["Pattern", "Yarn"];
+  const tempImage = require("@/assets/images/placeholderImage.png");
+
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
@@ -55,7 +60,8 @@ const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
     <View>
       <View className="flex-1">
         <ImageBackground
-          source={{ uri: `${pattern.image_path ?? [0]}` }}
+          source={tempImage}
+          // source={{ uri: `${pattern.image_path ?? [0]}` }}
           resizeMode="cover"
           style={{
             height: 500,
@@ -92,7 +98,7 @@ const Pattern: React.FC<PatternProps> = ({ pattern, source = "patterns" }) => {
           {/* onDelete={() => router.push("/patterns")} /> */}
         </View>
       
-        <Tabs onTabChange={handleTabChange} />
+        <Tabs onTabChange={handleTabChange} tabTitles={tabTitles}/>
         {activeTab === "Pattern" ? <InfoRoute /> : <YarnsRoute />}
 
       </View>

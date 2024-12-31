@@ -45,7 +45,8 @@ export default function AuthLayout() {
       <Stack.Screen name="(modal)/create" options={{ 
         presentation: "modal", // shows as model instead of new screen
         headerTitleAlign: "center",
-        title: "Create Pattern",
+        title: "Create Project",
+        headerShadowVisible: false,
         headerRight: () => (
           <TouchableOpacity>
             <Ionicons name="ellipsis-horizontal-circle" size={24} />
@@ -58,6 +59,7 @@ export default function AuthLayout() {
           presentation: 'modal', // doesn't actually show modal window currently
           headerShown: true,
           headerTitleAlign: "center",
+          headerShadowVisible: false,
           title: 'Edit profile',
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>

@@ -2,7 +2,7 @@ import { API_URL } from "@/config";
 // import axios from "axios";
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { PatternTypeID } from "@/types/index";
-import { Link, router, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
@@ -73,6 +73,7 @@ const PatternDetails = () => {
   return (
     <ScrollView>
       <SafeAreaView>
+        {/* <Stack.Screen /> */}
         <Pattern pattern={pattern} />
       </SafeAreaView>
     </ScrollView>

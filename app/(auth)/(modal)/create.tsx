@@ -24,29 +24,48 @@ type ErrorType = {
 const Create = () => {
   const { session } = useSession();
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
-  
-  const [selectedYarn, setSelectedYarn] = useState(null);
-  const [yarns, setYarns] = useState([]);
+
+  // const [selectedYarn, setSelectedYarn] = useState<YarnTypeID>(null);
+
+  const [yarns, setYarns] = useState<YarnTypeID[]>();
+  const [patterns, setPatterns] = useState<PatternTypeID[]>([]);
 
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [craftType, setCraftType] = useState("");
-  const [suggestedYarn, setSuggestedYarn] = useState("");
-  const [yarnWeight, setYarnWeight] = useState("");
-  const [gauge, setGauge] = useState("");
-  const [meterage, setMeterage] = useState("");
+  const [patternId, setPatternId] = useState("");
+
+  const [yarnsUsed, setYarnsUsed] = useState<{
+    yarn: string;
+    colorway_name: string[];
+  }>({
+    yarn: "67365b5a27116aa3ae9dc8ea",
+    colorway_name: [""],
+  });
+  const [selectedYarn, setSelectedYarn] = useState<YarnTypeID>(); // Currently selected yarn ID
+  const [colorways, setColorways] = useState<string[]>([]); // Available colorways for the selected yarn
+  const [selectedColorway, setSelectedColorway] = useState<string>(); // Selected colorway
+
+  // const [description, setDescription] = useState("");
+  // const [yarnWeight, setYarnWeight] = useState("");
+  // const [gauge, setGauge] = useState("");
+  // const [meterage, setMeterage] = useState("");
   const [image, setImage] = useState("");
+  // const [image, setImage] = useState("");
 
   const [form, setForm] = useState({
     title: title,
-    description: description,
     craft_type: craftType,
-    suggestedYarn: suggestedYarn,
-    yarn_weight: yarnWeight,
-    gauge: gauge,
-    meterage: meterage,
-    image: image,
+    pattern: "67379dac168686e5356ecf30",
+    yarns_used: {yarn: "67365b5a27116aa3ae9dc8ea",
+      colorway_name: ["Ocean Blue"],},
+    // yarns_used: colorwayUsed,
+    // description: description,
+    // yarn_weight: yarnWeight,
+    // gauge: gauge,
+    // meterage: meterage,
+    // image: image,
   });
+
 
   const [error, setError] = useState<ErrorType>({
     title: undefined,
@@ -59,17 +78,26 @@ const Create = () => {
     // image: undefined,
   });
 
-
-  // Load yarns for dropdown
+  // Load yarns and patterns for dropdowns
   useEffect(() => {
-    // setLoading(true); // display loading text until api call is completed
+    setLoading(true); // display loading text until api call is completed
 
-    // API call to get all patterns
+    // API call to get all yarns
     axiosAuthGet(`/yarns`, session)
       .then((response) => {
         setYarns(response.data);
         setLoading(false);
-        // console.log(response.data);
+      })
+      .catch((e) => {
+        console.error(e);
+        setLoading(false);
+      });
+
+    // API call to get all patterns
+    axiosAuthGet(`/patterns`, session)
+      .then((response) => {
+        setPatterns(response.data);
+        setLoading(false);
       })
       .catch((e) => {
         console.error(e);
@@ -77,29 +105,74 @@ const Create = () => {
       });
   }, []);
 
+  const handleYarnChange = (value: string) => {
+    setForm((prevState) => ({
+      ...prevState,
+      suggested_yarn: value,
+    }));
+    // setSelectedYarn(yarnId);
+    // setSelectedColorway(""); // Reset colorway when yarn changes
+    // const yarn = yarns?.find((yarn) => yarn._id === yarnId);
+    // if (yarn) {
+    //   setColorways(yarn.colorways);
+    // }
+  };
+
+  // Higher-order function, passing in a field name to dynamically set the state
+  const handleChange = (field: string) => (value: string) => { // field to ProjectType later
+    setForm((prevState) => ({
+      ...prevState, // takes what is already in form (spread operator)
+      [field]: value, // target.id is web only, use field name instead for android
+    }));
+
+    
+    if (field === "yarns_used.yarn") {
+      const selectedYarn = yarns?.find((yarn) => yarn._id === value);
+      if (selectedYarn) {
+        setColorways(selectedYarn.colorways);
+      }
+    }
+  };
+
+  //   Radio button handled separately
+  const handleRadioChange = (value: string) => {
+    setForm((prevState) => ({
+      ...prevState,
+      craft_type: value,
+    }));
+  };
+
+  const handleColorwayChange = (colorway: string) => {
+    setSelectedColorway(colorway);
+  };
+
+  const addYarnUsed = () => {
+    if (selectedYarn && selectedColorway) {
+      setYarnsUsed((prev) => [
+        ...prev,
+        { yarn: selectedYarn, colorway_name: [selectedColorway] },
+      ]);
+      // setSelectedYarn(null); // Reset selection
+      // setSelectedColorway("");
+      // setColorways([]); // Clear available colorways
+    }
+  };
+
   const handleSubmit = async () => {
-
-    const formNew = setForm({
-      title: title,
-      description: description,
-      craft_type: craftType,
-      suggestedYarn: suggestedYarn,
-      yarn_weight: yarnWeight,
-      gauge: gauge,
-      meterage: meterage,
-      image: image,
-    });
-    // console.log(`formNew: ${formNew}`);
-
+    // addYarnUsed();
+    console.log(JSON.stringify(yarnsUsed));
 
     const formData = new FormData();
     formData.append("title", title);
-    formData.append("description", description);
     formData.append("craft_type", craftType);
-    formData.append("suggested_yarn", suggestedYarn);
-    formData.append("yarn_weight", yarnWeight);
-    formData.append("gauge", gauge);
-    formData.append("meterage", meterage);
+    formData.append("pattern", patternId);
+    formData.append("yarns_used", yarnsUsed);
+
+    // console.log(`yarnsUsed: ${JSON.stringify(yarnsUsed)}`);
+    // formData.append("yarns_used", colorwayUsed);
+    // formData.append("gauge", gauge);
+    // formData.append("meterage", meterage);
+    // formData.append("description", description);
     // if (form.image) {
     //   formData.append("image", {
     //     uri: form.image,
@@ -107,19 +180,19 @@ const Create = () => {
     //     type: "image/jpeg",
     //   });
     // }
-
-    // console.log(`suggested yarn: ${formData}`);
   
-    try {
-      const response = await axiosPost("/patterns", formData, session);
+    // console.log(`form ${JSON.stringify(form)}`)
+    console.log(form)
+    // try {
+    //   const response = await axiosPost("/projects", form, session);
 
-      router.replace(`feed/${response.data.data._id}` as any); // type error
-      // console.log(response.data._id)
+    //   router.replace(`(auth)/(tabs)/feed/${response.data.data._id}` as any); // type error
+    //   // console.log(response.data._id)
 
-      console.log("Pattern created successfully", response.data.data._id);
-    } catch (error) {
-      console.error("Error creating pattern", error);
-    }
+    //   console.log("Project created successfully", response.data.data);
+    // } catch (error) {
+    //   console.error("Error creating project", error);
+    // }
 
     // .then((response: AxiosResponse<{ data: PatternTypeID }>) => {
     //   console.log(response);
@@ -163,12 +236,12 @@ const Create = () => {
         <SafeAreaView className="flex-1 mx-5 mt-5">
           <FormField
             title="Title"
-            value={title}
-            handleChangeText={setTitle}
+            value={form.title}
+            handleChangeText={handleChange("title")}
             error={error.title}
           />
           {error.title && <Text style={{ color: "red" }}>{error.title}</Text>}
-          <FormField
+          {/* <FormField
             title="Description"
             value={description}
             handleChangeText={setDescription}
@@ -178,28 +251,23 @@ const Create = () => {
           />
           {error.description && (
             <Text style={{ color: "red" }}>{error.description}</Text>
-          )}
+          )} */}
           <Text>Craft Type</Text>
 
-          <RadioButton.Group onValueChange={setCraftType} value={craftType}>
+          <RadioButton.Group
+            onValueChange={handleChange("craft_type")}
+            value={form.craft_type}
+          >
             <RadioButton.Item label="Crochet" value="crochet" />
             <RadioButton.Item label="Knitting" value="knitting" />
-            {/* <View>
-            <Text>Crochet</Text>
-            <RadioButton value="crochet" />
-          </View>
-          <View>
-            <Text>Knitting</Text>
-            <RadioButton value="knitting" />
-          </View> */}
           </RadioButton.Group>
           {error.craft_type && (
             <Text style={{ color: "red" }}>{error.craft_type}</Text>
           )}
-          <Text>Suggested Yarns</Text>
+          <Text>Yarns Used</Text>
           <Picker
             selectedValue={selectedYarn}
-            onValueChange={setSuggestedYarn} // Update selected yarn when the user selects a new one
+            onValueChange={handleChange(form.yarns_used.yarn)} // Update selected yarn when the user selects a new one
           >
             <Picker.Item label="Select a yarn" value={null} />
             {yarns?.map((yarn) => (
@@ -209,7 +277,47 @@ const Create = () => {
           {error.suggested_yarn && (
             <Text style={{ color: "red" }}>{error.suggested_yarn}</Text>
           )}
-          <FormField
+
+          {form.yarns_used.yarn && (
+            <View>
+              <Text>Colorway</Text>
+              <Picker
+                selectedValue={selectedColorway}
+                onValueChange={handleChange(form.yarns_used.colorway_name[0])} // Update selected yarn when the user selects a new one
+              >
+                <Picker.Item label="Select colorway" value={null} />
+                {colorways.map((colorway: string) => (
+                  <Picker.Item
+                    key={colorway}
+                    label={colorway}
+                    value={colorway}
+                  />
+                ))}
+              </Picker>
+              {error.suggested_yarn && (
+                <Text style={{ color: "red" }}>{error.suggested_yarn}</Text>
+              )}
+            </View>
+          )}
+
+          <Text>Pattern Used</Text>
+          <Picker
+            selectedValue={patternId}
+            onValueChange={handleChange("pattern")} // Update selected yarn when the user selects a new one
+          >
+            <Picker.Item label="Select a yarn" value={null} />
+            {patterns?.map((pattern: PatternType) => (
+              <Picker.Item
+                key={pattern._id}
+                label={pattern.title}
+                value={pattern._id}
+              />
+            ))}
+          </Picker>
+          {error.suggested_yarn && (
+            <Text style={{ color: "red" }}>{error.suggested_yarn}</Text>
+          )}
+          {/* <FormField
             title="Yarn Weight"
             value={yarnWeight}
             handleChangeText={setYarnWeight}
@@ -217,16 +325,16 @@ const Create = () => {
           />
           {error.yarn_weight && (
             <Text style={{ color: "red" }}>{error.yarn_weight}</Text>
-          )}
-          <FormField
+          )} */}
+          {/* <FormField
             title="Gauge"
             value={gauge} // don't understand why theres a type error
             handleChangeText={setGauge}
             error={error.gauge}
           />
-          {error.gauge && <Text style={{ color: "red" }}>{error.gauge}</Text>}
+          {error.gauge && <Text style={{ color: "red" }}>{error.gauge}</Text>} */}
 
-          <FormField
+          {/* <FormField
             title="Meterage" // Add new FormField for meterage
             value={meterage}
             handleChangeText={setMeterage}
@@ -234,7 +342,7 @@ const Create = () => {
           />
           {error.meterage && (
             <Text style={{ color: "red" }}>{error.meterage}</Text>
-          )}
+          )} */}
 
           {/* <View>
             {form.image ? (
@@ -257,6 +365,7 @@ const Create = () => {
             )}
           </View> */}
 
+          <Button onPress={addYarnUsed}>Add Yarn</Button>
           <Button onPress={handleSubmit}>Submit</Button>
           <View className="flex-1 items-end">
             <FAB
