@@ -24,12 +24,13 @@ type ErrorType = {
 const Create = () => {
   const { session } = useSession();
     const router = useRouter();
-    const { id } = useLocalSearchParams<{ id: string }>();
+    const { _id } = useLocalSearchParams<{ _id: string }>();
   
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
 
   // const [selectedYarn, setSelectedYarn] = useState<YarnTypeID>(null);
 
+  const [project, setProject] = useState();
   const [yarns, setYarns] = useState<YarnTypeID[]>();
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]);
 
@@ -112,22 +113,22 @@ const Create = () => {
 
   useEffect(() => {
     setLoading(true); // display loading text until api call is completed
-    if (id) {
+    if (_id) {
+      console.log(_id)
       // Fetch the pattern details using the id
-      axiosAuthGet(`/patterns/${id}`, session)
+      axiosAuthGet(`/projects/${_id}`, session)
         .then((response) => {
-          setPattern(response.data.data);
+          let patternRes = response.data.data;
+          setProject(patternRes);
           setForm({
-            title: response.data.data.title,
-            description: response.data.data.description,
-            craft_type: response.data.data.craft_type,
-            suggested_yarn: response.data.data.suggested_yarn,
-            yarn_weight: response.data.data.yarn_weight,
-            gauge: response.data.data.gauge,
-            meterage: response.data.data.meterage, // Set meterage from response
-            // image: response.data.data.image,
+            title: patternRes.title,
+            craft_type: patternRes.craft_type,
+            pattern: patternRes.pattern,
+            yarns_used: {yarn: patternRes.yarns_used.yarn._id,
+              colorway_name: [patternRes.yarns_used.yarn.colorway_name],},
+            
           });
-          setSelectedYarn(response.data.data.suggested_yarn?._id); // Set the selected yarn
+          setSelectedYarn(patternRes.suggested_yarn?._id); // Set the selected yarn
           setLoading(false);
         })
         .catch((e) => {
@@ -136,7 +137,7 @@ const Create = () => {
         })
         .finally(() => setLoading(false));
     }
-  }, [id, session]);
+  }, [_id, session]);
 
   const handleYarnChange = (value: string) => {
     console.log(value)

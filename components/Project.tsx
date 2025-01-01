@@ -3,7 +3,7 @@ import { Avatar, Button, Card, Text } from "react-native-paper";
 import React, { useState } from "react";
 import { PatternTypeID } from "@/types";
 import FavouriteButton from "./FavouriteButton";
-import { Link } from "expo-router";
+import { Link, RelativePathString, router } from "expo-router";
 import DeleteButton from "./DeleteButton";
 import { TabView } from "react-native-tab-view";
 import DetailElement from "./DetailElement";
@@ -90,8 +90,14 @@ const Project: React.FC<PatternProps> = ({
         </View>
         {/* Pass id as a url query */}
         <View className="flex-row">
-          <Link push href={`/${source}/edit?id=${project._id}`} asChild>
-            <Button>Edit Project</Button>
+          <Link push href={`profile/projects/edit?id=${project._id}`} asChild>
+            <Button 
+            // onPress={() =>
+            //         router.push({
+            //           pathname: `(auth)/(tabs)/profile/patterns/edit` as RelativePathString,
+            //           params: { id: project._id },
+            //         })}
+                    >Edit Project</Button>
           </Link>
           <DeleteButton
             resourceName="projects"
