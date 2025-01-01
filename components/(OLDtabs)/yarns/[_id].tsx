@@ -10,7 +10,7 @@ import { TabView, SceneMap } from "react-native-tab-view";
 
 import { useSession } from "@/contexts/AuthContext";
 import DetailElement from "@/components/DetailElement";
-import SuggestedYarns from "@/components/SuggestedYarns";
+import SuggestedYarns from "@/components/YarnDetails";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LoadingIndicator from "@/components/LoadingIndicator";
 

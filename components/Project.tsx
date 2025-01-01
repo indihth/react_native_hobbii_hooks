@@ -12,47 +12,49 @@ import { useSession } from "@/contexts/AuthContext";
 import Tabs from "./Tabs";
 
 type PatternProps = {
-  pattern: PatternTypeID;
+  project: PatternTypeID;
   source?: string;
   showBackButton?: boolean;
 };
 
-const Pattern: React.FC<PatternProps> = ({
-  pattern,
-  source = "patterns",
+const Project: React.FC<PatternProps> = ({
+  project,
+  source = "projects",
   showBackButton = false,
 }) => {
   const { session } = useSession();
-  // const id = pattern._id;
+  // const id = project._id;
 
   const [index, setIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("Pattern");
+  const [activeTab, setActiveTab] = useState("Project");
   const layout = useWindowDimensions();
 
-  const tabTitles = ["Pattern", "Yarn"];
+  const tabTitles = ["Project", "Yarn"];
   const tempImage = require("@/assets/images/placeholderImage.png");
+
+  const yarn = project?.yarns_used[0].yarn
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
   };
 
-  // Tab view for Pattern Information and Suggested Yarns
+  // Tab view for Project Information and Suggested Yarns
   const InfoRoute = () => (
     <View className="py-4">
       <Text variant="titleMedium" className="pb-3">
-        Pattern Information
+        Project Information
       </Text>
-      <DetailElement title="Yarn Weight" value={pattern?.yarn_weight} />
-      <DetailElement title="Gauge" value={pattern?.gauge} />
-      <DetailElement title="Meterage" value={pattern?.meterage} />
+      {/* <DetailElement title="Yarn Weight" value={yarn.title} />
+      <DetailElement title="Gauge" value={yarn.weight} />
+      <DetailElement title="Meterage" value={project?.meterage} />
       <Text variant="bodyLarge" className="pt-3">
-        {pattern?.description}{" "}
-      </Text>
+        {project?.description}{" "}
+      </Text> */}
     </View>
   );
 
   const YarnsRoute = () => (
-    <YarnDetails yarn={pattern?.suggested_yarn} />
+    <YarnDetails yarn={yarn} />
   );
 
   const routes = [
@@ -64,7 +66,7 @@ const Pattern: React.FC<PatternProps> = ({
       <View className="flex-1">
         <ImageBackground
           source={tempImage}
-          // source={{ uri: `${pattern.image_path ?? [0]}` }}
+          // source={{ uri: `${project.image_path ?? [0]}` }}
           resizeMode="cover"
           style={{
             height: 500,
@@ -72,40 +74,40 @@ const Pattern: React.FC<PatternProps> = ({
             alignItems: "flex-end",
           }}
         >
-          <FavouriteButton
-            resourceName="patterns"
-            id={pattern._id}
+          {/* <FavouriteButton
+            resourceName="projects"
+            id={project._id}
             session={session}
-          />
+          /> */}
         </ImageBackground>
       </View>
 
       <View className="px-3 pt-3">
         {/* <Text>{_id}</Text> */}
         <View className="flex-row justify-between items-baseline mb-5">
-          <Text variant="displaySmall">{pattern.title}</Text>
-          <Text variant="bodyMedium">by {pattern.user?.full_name}</Text>
+          <Text variant="displaySmall">{project.title}</Text>
+          <Text variant="bodyMedium">{project.craft_type}</Text>
         </View>
         {/* Pass id as a url query */}
         <View className="flex-row">
-          <Link push href={`/${source}/edit?id=${pattern._id}`} asChild>
-            <Button>Edit Pattern</Button>
+          <Link push href={`/${source}/edit?id=${project._id}`} asChild>
+            <Button>Edit Project</Button>
           </Link>
           <DeleteButton
-            resourceName="patterns"
-            id={pattern._id}
+            resourceName="projects"
+            id={project._id}
             session={session}
             onDelete={() => console.log("pressed")}
           />
-          {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
-          {/* onDelete={() => router.push("/patterns")} /> */}
+          {/* // onDelete={() => Alert.alert("Delete Project", "Project has been deleted successfully")} /> */}
+          {/* onDelete={() => router.push("/projects")} /> */}
         </View>
 
         <Tabs onTabChange={handleTabChange} tabTitles={tabTitles} />
-        {activeTab === "Pattern" ? <InfoRoute /> : <YarnsRoute />}
+        {activeTab === "Project" ? <InfoRoute /> : <YarnsRoute />}
       </View>
     </View>
   );
 };
 
-export default Pattern;
+export default Project;

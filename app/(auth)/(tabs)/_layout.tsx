@@ -111,11 +111,12 @@ export default function TabLayout() {
               color={color}
             />
           ),
-          // headerRight: () => (
-          //   <TouchableOpacity onPress={signOut}>
-          //     <Ionicons name="log-out" size={24} color="black" />
-          //   </TouchableOpacity>
-          // ),
+        }}
+      />
+       <Tabs.Screen
+        name="projects"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

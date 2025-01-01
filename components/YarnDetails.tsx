@@ -2,32 +2,31 @@ import { View } from "react-native";
 import { Text, Button } from "react-native-paper";
 import React from "react";
 import DetailElement from "./DetailElement";
-import { SuggestedYarn } from "../types";
+import { YarnTypeID, FiberType } from "../types";
 import { Link } from "expo-router";
 
 type Props = {
-  suggested_yarn: SuggestedYarn | undefined;
+  yarn: YarnTypeID | undefined;
 };
-const SuggestedYarns: React.FC<Props> = ({ suggested_yarn }) => {
-  // console.log(suggested_yarn);
+const YarnDetails: React.FC<Props> = ({ yarn }) => {
+  // console.log(yarn);
   return (
     <View className="py-4">
       <Text variant="titleMedium" className="pb-3">
         Suggested Yarns
       </Text>
-      <Text variant="bodyLarge">{suggested_yarn?.title}</Text>
-      {suggested_yarn?.fibers?.map((fiber, index) => (
+      {yarn?.fibers?.map((fiber: FiberType, index: number) => (
         <DetailElement
           key={index}
           title={fiber.fiber_name}
           value={`${fiber.percentage}%`}
         />
       ))}
-      <Link push href={`/yarns/${suggested_yarn?._id}`} asChild>
+      <Link push href={`/yarns/${yarn?._id}`} asChild>
         <Button>View Yarn</Button>
       </Link>
     </View>
   );
 };
 
-export default SuggestedYarns;
+export default YarnDetails;

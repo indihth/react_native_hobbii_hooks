@@ -8,12 +8,27 @@ const axiosInstance = axios.create({
 
 // Dynamically add token if it exists, accepts optional token of type string or null
 export const axiosAuthGet = (endpoint: string, token?: string | null) => {
-  return axiosInstance.get(endpoint, {
-    headers: {
-      // If token was passed, set auth header, otherwise leave undefined
-      Authorization: token ? `Bearer ${token}` : undefined,
-    },
+  try{
+    const response = axiosInstance.get(endpoint, {
+      headers: {
+        // If token was passed, set auth header, otherwise leave undefined
+        Authorization: token ? `Bearer ${token}` : undefined,
+      },
   });
+  return response;
+} catch (error) {
+  if (axios.isAxiosError(error)) {
+    return Promise.reject(error.response?.data || error.message);
+  } else {
+    return Promise.reject(error);
+  }
+}
+  // return axiosInstance.get(endpoint, {
+  //   headers: {
+  //     // If token was passed, set auth header, otherwise leave undefined
+  //     Authorization: token ? `Bearer ${token}` : undefined,
+  //   },
+  // });
 };
 
 export const axiosPost = async (

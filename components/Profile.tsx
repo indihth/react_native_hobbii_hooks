@@ -17,7 +17,7 @@ import { RelativePathString, router } from "expo-router";
 import ProfileDetails from "./ProfileDetails";
 import Tabs from "./Tabs";
 import { Card } from "react-native-paper";
-import { PatternTypeID } from "../types";
+import { PatternTypeID, ProjectTypeID } from "../types";
 import { axiosAuthGet } from "@/api/axiosInstance";
 
 type ProfileProps = {
@@ -30,6 +30,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
   const { authUserId } = useAuth();
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Patterns
+  const [projects, setProjects] = useState<ProjectTypeID[]>([]); // type of an array of Projects
 
   //   const [tabTitles, setTabTitles] = useState<string[]>();
   const [activeTab, setActiveTab] = useState<string>("Favourites");
@@ -52,9 +53,22 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
         setLoading(false);
       }
     };
+    const fetchProjects = async () => {
+      try {
+        setLoading(true); // display loading text until api call is completed
+        const response = await axiosAuthGet("/projects");
+        setProjects(response.data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchProjects();
     fetchPatterns();
   }, []);
+
 
   // checks if user is viewing their own profile, defines tabs based on this
   //   useEffect(() => {
@@ -72,7 +86,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     return activeTab === "Favourites" ? (
       <FavouritePatterns item={item} />
     ) : (
-      <Text>Other Tab Content</Text>
+      <MyProjects item={item} />
     );
   };
 
@@ -80,7 +94,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     <Pressable
       onPress={() =>
         router.push({
-          pathname: `/feed/[_id]` as RelativePathString,
+          pathname: `(auth)/(tabs)/profile/patterns/[_id]` as RelativePathString,
           params: { _id: item._id },
         })
       }
@@ -88,6 +102,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
       <Card className="mb-10">
         <Card.Title title={item.title} subtitle={item.description} />
         <Card.Cover
+          // source={tempImage}
           source={{
             uri: item.image_path
               ? `${imageURL}${item.image_path[0]}`
@@ -98,14 +113,39 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     </Pressable>
   );
 
+  const MyProjects = ({ item }: { item: any }) => (
+    <Pressable
+          onPress={() =>
+            router.push({
+              pathname: `(auth)/(tabs)/profile/projects/[_id]` as RelativePathString,
+              params: { _id: item._id }
+            })
+          }
+        >
+          <Card className="mb-10 ">
+            <Card.Title title={item.title} subtitle={item.craft_type} />
+            {/* <Card.Cover
+              source={{
+                uri: item.image_path
+                  ? `${imageURL}${item.image_path[0]}`
+                  : tempImage,
+              }}
+            /> */}
+            <Card.Content>
+              <Text>{item._id}</Text>
+            </Card.Content>
+          </Card>
+        </Pressable>
+  );
+
   return (
     <SafeAreaView>
       <View>
         <FlatList
-          data={activeTab === "Favourites" ? patterns : []}
+          data={activeTab === "Favourites" ? patterns : projects}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <FlatListContent item={item} />}
-          keyExtractor={activeTab === "Favourites" ? ((pattern: PatternTypeID) => pattern._id) : undefined}
+          keyExtractor={activeTab === "Favourites" ? ((pattern: PatternTypeID) => pattern._id) : ((project: ProjectTypeID) => project._id)}
           ListEmptyComponent={<Text>Empty</Text>}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListHeaderComponent={
@@ -186,6 +226,3 @@ const styles = StyleSheet.create({
 });
 
 export default Profile;
-function setLoading(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

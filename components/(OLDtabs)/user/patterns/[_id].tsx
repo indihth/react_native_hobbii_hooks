@@ -19,7 +19,7 @@ import { TabView, SceneMap } from "react-native-tab-view";
 
 import { useSession } from "@/contexts/AuthContext";
 import DetailElement from "@/components/DetailElement";
-import SuggestedYarns from "@/components/SuggestedYarns";
+import SuggestedYarns from "@/components/YarnDetails";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DeleteButton from "@/components/DeleteButton";
 import FavouriteButton from "@/components/FavouriteButton";
@@ -28,23 +28,26 @@ import Pattern from "@/components/Pattern";
 const PatternDetails = () => {
   const { session } = useSession();
   const router = useRouter();
-  const { _id, source } = useLocalSearchParams<{ _id: string, source: string }>();
+  const { _id, source } = useLocalSearchParams<{
+    _id: string;
+    source: string;
+  }>();
 
   const [pattern, setPattern] = useState<PatternTypeID>(); // type of an array of Patterns
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
   const [index, setIndex] = useState(0);
 
-    // useFocusEffect(
-    //   useCallback(() => {
-    //     // replaces stack navigation when going back
-    //     if (source === "favourites") {
-    //       router.replace("/users/favourites");
-    //     } else {
-    //       router.replace("/patterns");
-    //     }
-    //   }, [source])
-    // );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     // replaces stack navigation when going back
+  //     if (source === "favourites") {
+  //       router.replace("/users/favourites");
+  //     } else {
+  //       router.replace("/patterns");
+  //     }
+  //   }, [source])
+  // );
 
   useEffect(() => {
     setLoading(true); // display loading text until api call is completed
@@ -61,7 +64,6 @@ const PatternDetails = () => {
         setLoading(false);
       });
   }, [_id, session]);
-  
 
   // Display while loading
   if (loading || !pattern) {
@@ -71,7 +73,7 @@ const PatternDetails = () => {
   return (
     <ScrollView>
       <SafeAreaView>
-     <Pattern pattern={pattern}/>
+        <Pattern pattern={pattern} />
       </SafeAreaView>
     </ScrollView>
   );

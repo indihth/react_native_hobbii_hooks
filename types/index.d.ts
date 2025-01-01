@@ -34,7 +34,7 @@ export interface YarnTypeID {
   weight?: string;
   meterage?: string;
   needle_size?: string;
-  fibers?: Fiber[];
+  fibers?: FiberType[];
   description?: string;
   image_path?: string;
 }
@@ -42,10 +42,11 @@ export interface YarnTypeID {
 export interface SuggestedYarn {
   _id: string;
   title: string;
-  fibers?: Fiber[];
+  colorways?: string[];
+  fibers?: FiberType[];
 }
 
-export interface Fiber {
+export interface FiberType {
   fiber_name: string;
   percentage: number;
 }
@@ -60,4 +61,17 @@ export interface UserType {
   website_url?: string;
   portfolio_description?: string;
   favourite_patterns?: PatternTypeID[];
+}
+
+export interface ProjectsType {
+  title: string;
+  craft_type: string;
+  patterns: PatternTypeID[];
+  yarns_used: { yarn: string; colorway_name: string[] }[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectsTypeID extends ProjectsType {
+  _id: string;
 }
