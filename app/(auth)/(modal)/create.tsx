@@ -55,9 +55,11 @@ const Create = () => {
   const [form, setForm] = useState({
     title: title,
     craft_type: craftType,
-    pattern: "67379dac168686e5356ecf30",
-    yarns_used: {yarn: "67365b5a27116aa3ae9dc8ea",
-      colorway_name: ["Ocean Blue"],},
+    pattern: patternId,
+    yarns_used: {yarn: selectedYarn,
+      colorway_name: [selectedColorway],},
+    // yarns_used: {yarn: "67365b5a27116aa3ae9dc8ea",
+    //   colorway_name: ["Ocean Blue"],},
     // yarns_used: colorwayUsed,
     // description: description,
     // yarn_weight: yarnWeight,
@@ -106,16 +108,15 @@ const Create = () => {
   }, []);
 
   const handleYarnChange = (value: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      suggested_yarn: value,
-    }));
-    // setSelectedYarn(yarnId);
+    console.log(value)
+    // setColorways(form.yarns_used.colorway_name)
+
+    setSelectedYarn(value);
     // setSelectedColorway(""); // Reset colorway when yarn changes
-    // const yarn = yarns?.find((yarn) => yarn._id === yarnId);
-    // if (yarn) {
-    //   setColorways(yarn.colorways);
-    // }
+    const selectedYarn = yarns?.find((yarn) => yarn._id === value);
+      if (selectedYarn) {
+        setColorways(selectedYarn.colorways);
+      }
   };
 
   // Higher-order function, passing in a field name to dynamically set the state
@@ -123,22 +124,6 @@ const Create = () => {
     setForm((prevState) => ({
       ...prevState, // takes what is already in form (spread operator)
       [field]: value, // target.id is web only, use field name instead for android
-    }));
-
-    
-    if (field === "yarns_used.yarn") {
-      const selectedYarn = yarns?.find((yarn) => yarn._id === value);
-      if (selectedYarn) {
-        setColorways(selectedYarn.colorways);
-      }
-    }
-  };
-
-  //   Radio button handled separately
-  const handleRadioChange = (value: string) => {
-    setForm((prevState) => ({
-      ...prevState,
-      craft_type: value,
     }));
   };
 
@@ -160,39 +145,21 @@ const Create = () => {
 
   const handleSubmit = async () => {
     // addYarnUsed();
-    console.log(JSON.stringify(yarnsUsed));
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("craft_type", craftType);
-    formData.append("pattern", patternId);
-    formData.append("yarns_used", yarnsUsed);
-
-    // console.log(`yarnsUsed: ${JSON.stringify(yarnsUsed)}`);
-    // formData.append("yarns_used", colorwayUsed);
-    // formData.append("gauge", gauge);
-    // formData.append("meterage", meterage);
-    // formData.append("description", description);
-    // if (form.image) {
-    //   formData.append("image", {
-    //     uri: form.image,
-    //     name: "photo.jpg",
-    //     type: "image/jpeg",
-    //   });
-    // }
+  form.yarns_used.yarn = selectedYarn;
+  form.yarns_used.colorway_name = [selectedColorway];
   
     // console.log(`form ${JSON.stringify(form)}`)
-    console.log(form)
-    // try {
-    //   const response = await axiosPost("/projects", form, session);
+    // console.log(form)
+    try {
+      const response = await axiosPost("/projects", form, session);
 
-    //   router.replace(`(auth)/(tabs)/feed/${response.data.data._id}` as any); // type error
-    //   // console.log(response.data._id)
+      router.replace(`(auth)/(tabs)/feed/${response.data.data._id}` as any); // type error
+      // console.log(response.data._id)
 
-    //   console.log("Project created successfully", response.data.data);
-    // } catch (error) {
-    //   console.error("Error creating project", error);
-    // }
+      console.log("Project created successfully", response.data.data);
+    } catch (error) {
+      console.error("Error creating project", error);
+    }
 
     // .then((response: AxiosResponse<{ data: PatternTypeID }>) => {
     //   console.log(response);
@@ -267,7 +234,7 @@ const Create = () => {
           <Text>Yarns Used</Text>
           <Picker
             selectedValue={selectedYarn}
-            onValueChange={handleChange(form.yarns_used.yarn)} // Update selected yarn when the user selects a new one
+            onValueChange={handleYarnChange} // Update selected yarn when the user selects a new one
           >
             <Picker.Item label="Select a yarn" value={null} />
             {yarns?.map((yarn) => (
@@ -277,13 +244,12 @@ const Create = () => {
           {error.suggested_yarn && (
             <Text style={{ color: "red" }}>{error.suggested_yarn}</Text>
           )}
-
-          {form.yarns_used.yarn && (
+          {colorways.length > 0 && (
             <View>
               <Text>Colorway</Text>
               <Picker
                 selectedValue={selectedColorway}
-                onValueChange={handleChange(form.yarns_used.colorway_name[0])} // Update selected yarn when the user selects a new one
+                onValueChange={handleColorwayChange} 
               >
                 <Picker.Item label="Select colorway" value={null} />
                 {colorways.map((colorway: string) => (
