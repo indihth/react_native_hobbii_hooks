@@ -93,13 +93,16 @@ const Create = () => {
         setYarns(yarnsResponse.data);
         setPatterns(patternsResponse.data);
 
+        // console.log(projectResponse.data.data);
+        // console.log(_id)
+
         let project = projectResponse.data.data;
         setForm({
           title: project.title,
           craft_type: project.craft_type,
-          pattern: project.pattern._id,
+          pattern: project.pattern?._id,
           yarns_used: {
-            yarn: project.yarns_used[0]?.yarn._id,
+            yarn: project.yarns_used[0]?.yarn?._id, //
             colorway_name: [project.yarns_used[0]?.colorway_name[0]],
           },
         });
@@ -114,7 +117,6 @@ const Create = () => {
         // If the yarn is found, set the colorways
         if (usedYarn) {
           setColorways(usedYarn.colorways);
-          console.log("selecteYarn set");
           setSelectedColorway(project.yarns_used[0]?.colorway_name[0]);
         }
       } catch (e) {
@@ -123,13 +125,8 @@ const Create = () => {
         setLoading(false);
       }
     };
-
     fetchData(_id);
   }, []);
-
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
 
   const handleYarnChange = (value: string) => {
     console.log(value);
@@ -183,8 +180,8 @@ const Create = () => {
     try {
       const response = await axiosPut(`/projects/${_id}`, form, session);
 
-      // router.replace(`(auth)/(tabs)/feed/${_id}` as any); // type error
-      router.dismiss()
+      // router.replace(`(auth)/(tabs)/profile/projects/${_id}` as any); // type error
+      router.dismiss() // need to refresh the page to see the changes
       // console.log(response.data._id)
 
       console.log("Project updated successfully", response.data.data);

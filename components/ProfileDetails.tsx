@@ -34,20 +34,11 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
     }
   };
 
-//   useEffect(() => {
-//     fetchData();
-//   }, [userId]);
-
-// Not the best practice but shows updated user info after update.
   useFocusEffect(
     useCallback(() => {
       fetchData();
     }, [userId])
   );
-
-  const handleRefresh = () => {
-    fetchData();
-  };
 
   return (
     <View className="" style={styles.container}>

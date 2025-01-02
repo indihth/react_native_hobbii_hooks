@@ -72,7 +72,7 @@ const Project: React.FC<ProjectProps> = ({
       <DetailElement title="Project Notes" value={project.project_notes} />
       <DetailElement title="Yarn Weight" value={yarn?.title} />
       <DetailElement title="Gauge" value={yarn?.weight} />
-      <DetailElement title="Pattern Used" value={project.pattern.title} />
+      <DetailElement title="Pattern Used" value={project.pattern?.title} />
       <Text variant="bodyLarge" className="pt-3">
         {project?.description}{" "}
       </Text>
@@ -126,7 +126,7 @@ const Project: React.FC<ProjectProps> = ({
           {/* // onDelete={() => Alert.alert("Delete Project", "Project has been deleted successfully")} /> */}
           {/* onDelete={() => router.push("/projects")} /> */}
         </View>
-        <Button onPress={() => console.log(project._id)}>Back</Button>
+        <Button onPress={() => console.log(project)}>Back</Button>
 
         <Tabs onTabChange={handleTabChange} tabTitles={tabTitles} />
         {activeTab === "Project" ? <InfoRoute /> : <YarnsRoute />}

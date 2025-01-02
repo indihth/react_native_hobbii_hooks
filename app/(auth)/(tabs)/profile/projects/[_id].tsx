@@ -1,7 +1,7 @@
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { ProjectTypeID } from "@/types/index";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { ScrollView, SafeAreaView, Text } from "react-native";
 
 import { useSession } from "@/contexts/AuthContext";
@@ -21,23 +21,31 @@ const ProjectDetails = () => {
 
   const [index, setIndex] = useState(0);
 
-  useEffect(() => {
-    setLoading(true); // display loading text until api call is completed
+  const fetchProject = async () => {
+    try {
+      const response = await axiosAuthGet(`/projects/${_id}`, session);
+      // const response = await axiosAuthGet(`/project/${_id}`, session);
+      setProject(response.data.data);
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
+    }
+  };
 
-    const fetchProject = async () => {
-      try {
-        const response = await axiosAuthGet(`/projects/${_id}`, session);
-        // const response = await axiosAuthGet(`/project/${_id}`, session);
-        setProject(response.data.data);
-        setLoading(false);
-      } catch (e) {
-        console.error(e);
-        setLoading(false);
-      }
-    };
-    fetchProject();
-    
-  }, [_id, session]);
+  // useEffect(() => {
+  //   setLoading(true); // display loading text until api call is completed
+
+  //   fetchProject();
+  // }, [_id, session]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true); // display loading text until api call is completed
+
+      fetchProject();
+    }, [_id, session])
+  );
 
   // Display while loading
   if (loading || !project) {
