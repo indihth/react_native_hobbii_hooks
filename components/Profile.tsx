@@ -69,7 +69,6 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     fetchPatterns();
   }, []);
 
-
   // checks if user is viewing their own profile, defines tabs based on this
   //   useEffect(() => {
   //     const isSelf = userId === authUserId;
@@ -94,12 +93,13 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     <Pressable
       onPress={() =>
         router.push({
-          pathname: `(auth)/(tabs)/profile/patterns/[_id]` as RelativePathString,
+          pathname:
+            `(auth)/(tabs)/profile/patterns/[_id]` as RelativePathString,
           params: { _id: item._id },
         })
       }
     >
-      <Card className="mb-10">
+      <Card>
         <Card.Title title={item.title} subtitle={item.description} />
         <Card.Cover
           // source={tempImage}
@@ -115,27 +115,29 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
 
   const MyProjects = ({ item }: { item: any }) => (
     <Pressable
-          onPress={() =>
-            router.push({
-              pathname: `(auth)/(tabs)/profile/projects/[_id]` as RelativePathString,
-              params: { _id: item._id }
-            })
-          }
-        >
-          <Card className="mb-10 ">
-            <Card.Title title={item.title} subtitle={item.craft_type} />
-            {/* <Card.Cover
+      onPress={() =>
+        router.push({
+          pathname:
+            `(auth)/(tabs)/profile/projects/[_id]` as RelativePathString,
+          params: { _id: item._id },
+        })
+      }
+      onLongPress={() => console.log("Long Press")}
+    >
+      <Card >
+        <Card.Title title={item.title} subtitle={item.craft_type} />
+        {/* <Card.Cover
               source={{
                 uri: item.image_path
                   ? `${imageURL}${item.image_path[0]}`
                   : tempImage,
               }}
             /> */}
-            <Card.Content>
-              <Text>{item._id}</Text>
-            </Card.Content>
-          </Card>
-        </Pressable>
+        <Card.Content>
+          <Text>{item._id}</Text>
+        </Card.Content>
+      </Card>
+    </Pressable>
   );
 
   return (
@@ -145,7 +147,11 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
           data={activeTab === "Favourites" ? patterns : projects}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <FlatListContent item={item} />}
-          keyExtractor={activeTab === "Favourites" ? ((pattern: PatternTypeID) => pattern._id) : ((project: ProjectTypeID) => project._id)}
+          keyExtractor={
+            activeTab === "Favourites"
+              ? (pattern: PatternTypeID) => pattern._id
+              : (project: ProjectTypeID) => project._id
+          }
           ListEmptyComponent={<Text>Empty</Text>}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListHeaderComponent={

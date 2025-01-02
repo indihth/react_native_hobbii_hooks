@@ -93,6 +93,7 @@ const Pattern: React.FC<PatternProps> = ({
           </Link>
           <DeleteButton
             resourceName="patterns"
+            text="Delete Pattern"
             id={pattern._id}
             session={session}
             onDelete={() => console.log("pressed")}

@@ -1,7 +1,7 @@
 import { ImageBackground, useWindowDimensions, View } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import React, { useState } from "react";
-import { PatternTypeID } from "@/types";
+import { ProjectTypeID, YarnTypeID } from "@/types";
 import FavouriteButton from "./FavouriteButton";
 import { Link, RelativePathString, router } from "expo-router";
 import DeleteButton from "./DeleteButton";
@@ -11,16 +11,15 @@ import YarnDetails from "./YarnDetails";
 import { useSession } from "@/contexts/AuthContext";
 import Tabs from "./Tabs";
 
-type PatternProps = {
-  project: PatternTypeID;
+type ProjectProps = {
+  project: ProjectTypeID;
   source?: string;
   showBackButton?: boolean;
 };
 
-const Project: React.FC<PatternProps> = ({
+const Project: React.FC<ProjectProps> = ({
   project,
   source = "projects",
-  showBackButton = false,
 }) => {
   const { session } = useSession();
   // const id = project._id;
@@ -32,8 +31,14 @@ const Project: React.FC<PatternProps> = ({
   const tabTitles = ["Project", "Yarn"];
   const tempImage = require("@/assets/images/placeholderImage.png");
 
-  const yarn = project?.yarns_used[0].yarn
-
+  let yarn: YarnTypeID;
+  if (project?.yarns_used && project.yarns_used.length > 0) {
+    yarn = project.yarns_used[0].yarn;
+  }
+  
+  // if (project?.yarns_used[0].yarn ) {
+  //   yarn = project?.yarns_used[0].yarn;
+  // }
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
   };
@@ -44,23 +49,38 @@ const Project: React.FC<PatternProps> = ({
       <Text variant="titleMedium" className="pb-3">
         Project Information
       </Text>
-      {/* <DetailElement title="Yarn Weight" value={yarn.title} />
-      <DetailElement title="Gauge" value={yarn.weight} />
-      <DetailElement title="Meterage" value={project?.meterage} />
+      <DetailElement title="Made for" value={project.made_for} />
+      <DetailElement title="Craft Type" value={project.craft_type} />
+      <DetailElement title="Project Notes" value={project.project_notes} />
+      <DetailElement title="Needle/Hook Size" value={project.needle_size} />
+      <DetailElement
+        title="Start Date"
+        value={
+          project.started_date
+            ? new Date(project.started_date).toLocaleDateString()
+            : ""
+        }
+      />
+      <DetailElement
+        title="Completed Date"
+        value={
+          project.completed_date
+            ? new Date(project.completed_date).toLocaleDateString()
+            : ""
+        }
+      />
+      <DetailElement title="Project Notes" value={project.project_notes} />
+      <DetailElement title="Yarn Weight" value={yarn?.title} />
+      <DetailElement title="Gauge" value={yarn?.weight} />
+      <DetailElement title="Pattern Used" value={project.pattern.title} />
       <Text variant="bodyLarge" className="pt-3">
         {project?.description}{" "}
-      </Text> */}
+      </Text>
     </View>
   );
 
-  const YarnsRoute = () => (
-    <YarnDetails yarn={yarn} />
-  );
+  const YarnsRoute = () => <YarnDetails yarn={yarn} />;
 
-  const routes = [
-    { key: "info", title: "Info" },
-    { key: "yarns", title: "Yarns" },
-  ];
   return (
     <View>
       <View className="flex-1">
@@ -74,11 +94,6 @@ const Project: React.FC<PatternProps> = ({
             alignItems: "flex-end",
           }}
         >
-          {/* <FavouriteButton
-            resourceName="projects"
-            id={project._id}
-            session={session}
-          /> */}
         </ImageBackground>
       </View>
 
@@ -86,21 +101,24 @@ const Project: React.FC<PatternProps> = ({
         {/* <Text>{_id}</Text> */}
         <View className="flex-row justify-between items-baseline mb-5">
           <Text variant="displaySmall">{project.title}</Text>
-          <Text variant="bodyMedium">{project.craft_type}</Text>
+          <Text variant="bodyMedium">{project.status}</Text>
         </View>
         {/* Pass id as a url query */}
         <View className="flex-row">
-          <Link push href={`profile/projects/edit?id=${project._id}`} asChild>
-            <Button 
+          <Link push href={`profile/projects/edit?_id=${project._id}`} asChild>
+            <Button
             // onPress={() =>
             //         router.push({
             //           pathname: `(auth)/(tabs)/profile/patterns/edit` as RelativePathString,
-            //           params: { id: project._id },
+            //           params: { _id: project._id },
             //         })}
-                    >Edit Project</Button>
+            >
+              Edit Project
+            </Button>
           </Link>
           <DeleteButton
             resourceName="projects"
+            text="Delete project"
             id={project._id}
             session={session}
             onDelete={() => console.log("pressed")}
@@ -108,6 +126,7 @@ const Project: React.FC<PatternProps> = ({
           {/* // onDelete={() => Alert.alert("Delete Project", "Project has been deleted successfully")} /> */}
           {/* onDelete={() => router.push("/projects")} /> */}
         </View>
+        <Button onPress={() => console.log(project._id)}>Back</Button>
 
         <Tabs onTabChange={handleTabChange} tabTitles={tabTitles} />
         {activeTab === "Project" ? <InfoRoute /> : <YarnsRoute />}

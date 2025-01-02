@@ -8,21 +8,21 @@ const axiosInstance = axios.create({
 
 // Dynamically add token if it exists, accepts optional token of type string or null
 export const axiosAuthGet = (endpoint: string, token?: string | null) => {
-  try{
+  try {
     const response = axiosInstance.get(endpoint, {
       headers: {
         // If token was passed, set auth header, otherwise leave undefined
         Authorization: token ? `Bearer ${token}` : undefined,
       },
-  });
-  return response;
-} catch (error) {
-  if (axios.isAxiosError(error)) {
-    return Promise.reject(error.response?.data || error.message);
-  } else {
-    return Promise.reject(error);
+    });
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return Promise.reject(error.response?.data || error.message);
+    } else {
+      return Promise.reject(error);
+    }
   }
-}
   // return axiosInstance.get(endpoint, {
   //   headers: {
   //     // If token was passed, set auth header, otherwise leave undefined
@@ -37,14 +37,13 @@ export const axiosPost = async (
   token?: string | null | undefined
 ) => {
   try {
-    const response = await axiosInstance
-      .post(endpoint, formData, {
-        headers: {
-          // If token was passed, set auth header, otherwise leave undefined
-          Authorization: token ? `Bearer ${token}` : undefined,
-          "content-type": "multipart/form-data",
-        },
-      });
+    const response = await axiosInstance.post(endpoint, formData, {
+      headers: {
+        // If token was passed, set auth header, otherwise leave undefined
+        Authorization: token ? `Bearer ${token}` : undefined,
+        "content-type": "multipart/form-data",
+      },
+    });
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -72,18 +71,28 @@ export const axiosPostFav = (
   );
 };
 
-export const axiosPut = (
+export const axiosPut = async (
   endpoint: string,
   formData: object,
   token?: string | null
 ) => {
-  return axiosInstance.put(endpoint, formData, {
-    headers: {
-      // If token was passed, set auth header, otherwise leave undefined
-      Authorization: token ? `Bearer ${token}` : undefined,
-      "content-type": "multipart/form-data",
-    },
-  });
+  try {
+    const response = await axiosInstance.put(endpoint, formData, {
+      headers: {
+        // If token was passed, set auth header, otherwise leave undefined
+        Authorization: token ? `Bearer ${token}` : undefined,
+        "content-type": "multipart/form-data",
+      },
+    });
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      return await Promise.reject(error.response?.data || error.message);
+      // return await Promise.reject(error.response || error.message);
+    } else {
+      return await Promise.reject(error);
+    }
+  }
 };
 
 export const axiosDelete = (

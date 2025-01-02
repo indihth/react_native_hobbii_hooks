@@ -148,8 +148,6 @@ const Create = () => {
   form.yarns_used.yarn = selectedYarn;
   form.yarns_used.colorway_name = [selectedColorway];
   
-    // console.log(`form ${JSON.stringify(form)}`)
-    // console.log(form)
     try {
       const response = await axiosPost("/projects", form, session);
 
@@ -160,16 +158,6 @@ const Create = () => {
     } catch (error) {
       console.error("Error creating project", error);
     }
-
-    // .then((response: AxiosResponse<{ data: PatternTypeID }>) => {
-    //   console.log(response);
-    //   router.dismiss();
-    //   // router.replace(`/patterns/${response.data.data._id}`);
-    // })
-    // .catch((e: AxiosError) => {
-    //   console.log(e);
-    //   // console.log(response.data);
-    // });
   };
 
   const handleCancel = () => {

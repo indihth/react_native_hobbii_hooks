@@ -30,7 +30,6 @@ const ProjectDetails = () => {
         // const response = await axiosAuthGet(`/project/${_id}`, session);
         setProject(response.data.data);
         setLoading(false);
-        console.log("axios success");
       } catch (e) {
         console.error(e);
         setLoading(false);

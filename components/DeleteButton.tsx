@@ -6,6 +6,7 @@ import { router } from "expo-router";
 
 interface DeleteButtonProps {
   resourceName: string;
+  text: string;
   id: string;
   session: string | null | undefined;
   onDelete: () => void;
@@ -13,6 +14,7 @@ interface DeleteButtonProps {
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
   resourceName,
+  text,
   id,
   session,
   onDelete,
@@ -38,7 +40,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
       <Button
         onPress={() => setVisible(true)} // Call the delete function directly on button press
       >
-        Delete pattern
+        {text}
       </Button>
       <Portal>
         <Dialog visible={visible} onDismiss={hideDialog}>
