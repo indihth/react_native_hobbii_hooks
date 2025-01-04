@@ -10,6 +10,7 @@ import DetailElement from "./DetailElement";
 import YarnDetails from "./YarnDetails";
 import { useSession } from "@/contexts/AuthContext";
 import Tabs from "./Tabs";
+import { formatStatus } from "@/utils/formatStatus";
 
 type ProjectProps = {
   project: ProjectTypeID;
@@ -17,10 +18,7 @@ type ProjectProps = {
   showBackButton?: boolean;
 };
 
-const Project: React.FC<ProjectProps> = ({
-  project,
-  source = "projects",
-}) => {
+const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
   const { session } = useSession();
   // const id = project._id;
 
@@ -35,7 +33,7 @@ const Project: React.FC<ProjectProps> = ({
   if (project?.yarns_used && project.yarns_used.length > 0) {
     yarn = project.yarns_used[0].yarn;
   }
-  
+
   // if (project?.yarns_used[0].yarn ) {
   //   yarn = project?.yarns_used[0].yarn;
   // }
@@ -49,9 +47,12 @@ const Project: React.FC<ProjectProps> = ({
       <Text variant="titleMedium" className="pb-3">
         Project Information
       </Text>
+      <Text variant="bodyMedium" className="pb-3">
+        {project.project_notes}
+      </Text>
       <DetailElement title="Made for" value={project.made_for} />
       <DetailElement title="Craft Type" value={project.craft_type} />
-      <DetailElement title="Project Notes" value={project.project_notes} />
+      {/* <DetailElement title="Project Notes" value={project.project_notes} /> */}
       <DetailElement title="Needle/Hook Size" value={project.needle_size} />
       <DetailElement
         title="Start Date"
@@ -69,9 +70,7 @@ const Project: React.FC<ProjectProps> = ({
             : ""
         }
       />
-      <DetailElement title="Project Notes" value={project.project_notes} />
-      <DetailElement title="Yarn Weight" value={yarn?.title} />
-      <DetailElement title="Gauge" value={yarn?.weight} />
+      <DetailElement title="Yarn Weight" value={yarn?.weight} />
       <DetailElement title="Pattern Used" value={project.pattern?.title} />
       <Text variant="bodyLarge" className="pt-3">
         {project?.description}{" "}
@@ -93,15 +92,14 @@ const Project: React.FC<ProjectProps> = ({
             justifyContent: "flex-end",
             alignItems: "flex-end",
           }}
-        >
-        </ImageBackground>
+        ></ImageBackground>
       </View>
 
       <View className="px-3 pt-3">
         {/* <Text>{_id}</Text> */}
         <View className="flex-row justify-between items-baseline mb-5">
           <Text variant="displaySmall">{project.title}</Text>
-          <Text variant="bodyMedium">{project.status}</Text>
+          <Text variant="bodyMedium">{formatStatus(project.status)}</Text>
         </View>
         {/* Pass id as a url query */}
         <View className="flex-row">

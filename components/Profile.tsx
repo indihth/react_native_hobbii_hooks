@@ -19,6 +19,7 @@ import Tabs from "./Tabs";
 import { Card } from "react-native-paper";
 import { PatternTypeID, ProjectTypeID } from "../types";
 import { axiosAuthGet } from "@/api/axiosInstance";
+import { formatStatus } from "@/utils/formatStatus";
 
 type ProfileProps = {
   userId?: string;
@@ -56,7 +57,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     const fetchProjects = async () => {
       try {
         setLoading(true); // display loading text until api call is completed
-        const response = await axiosAuthGet("/projects");
+        const response = await axiosAuthGet("/projects/my_projects", session);
         setProjects(response.data);
       } catch (e) {
         console.error(e);
@@ -134,7 +135,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
               }}
             /> */}
         <Card.Content>
-          <Text>{item._id}</Text>
+          <Text>{formatStatus(item.status)}</Text>
         </Card.Content>
       </Card>
     </Pressable>
