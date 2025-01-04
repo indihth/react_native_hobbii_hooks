@@ -134,7 +134,7 @@ export default function RegisterForm() {
           className="flex-1"
           colors={["rgba(0, 0, 0, 0.4)", "rgba(0, 0, 0, 0.8)"]} // Gradient of black
         >
-          <SafeAreaView className="flex-1 mx-5">
+          <View className="flex-1 mx-5">
             <View>
               <Text className="text-center text-white text-4xl">
                 Hobbii Hooks
@@ -177,7 +177,7 @@ export default function RegisterForm() {
 
             {/* sets android status bar colors, time, wifi, battery */}
             <StatusBar style="light" />
-          </SafeAreaView>
+          </View>
         </LinearGradient>
       </ImageBackground>
     </View>

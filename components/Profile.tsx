@@ -5,21 +5,20 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import React, { useCallback, useEffect, useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FlatList } from "react-native";
 import { useAuth, useSession } from "@/contexts/AuthContext";
-import { RelativePathString, router } from "expo-router";
+import { RelativePathString, router, useFocusEffect } from "expo-router";
 import ProfileDetails from "./ProfileDetails";
 import Tabs from "./Tabs";
 import { Card } from "react-native-paper";
 import { PatternTypeID, ProjectTypeID } from "../types";
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { formatStatus } from "@/utils/formatStatus";
+import PatternCard from "./PatternCard";
+import ProjectCard from "./ProjectCard";
+import { PathnameContext } from "@/contexts/PathnameContext";
 
 type ProfileProps = {
   userId?: string;
@@ -34,15 +33,41 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
   const [projects, setProjects] = useState<ProjectTypeID[]>([]); // type of an array of Projects
 
   //   const [tabTitles, setTabTitles] = useState<string[]>();
-  const [activeTab, setActiveTab] = useState<string>("Favourites");
-
-  const tabTitlesOwn = ["Favourites", "My Projects"];
-  const tabTitlesOther = ["Favourites", "Projects"];
+  const isSelf = !userId || userId === authUserId;
+  
+  const tabTitles = isSelf ? ["Patterns", "Projects"] : ["Patterns"];
+  const [activeTab, setActiveTab] = useState<string>(tabTitles[0]);
 
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
   const tempImage = require("@/assets/images/placeholderImage.png");
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      if (isSelf) {
+      // if (userId === authUserId) {
+        // const response = await axiosAuthGet(`/users/${authUserId}`, session);
+        fetchPatterns();
+        fetchProjects();
+        console.log("auth user")
+
+        // Handle the response data as needed
+      } else {
+        console.log("not auth user")
+        const response = await axiosAuthGet(`/patterns?userId=${userId}`, session);
+        setPatterns(response.data);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchData();
+  }, [userId, authUserId]);
+  // useEffect(() => {
     const fetchPatterns = async () => {
       try {
         setLoading(true); // display loading text until api call is completed
@@ -66,90 +91,38 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
       }
     };
 
-    fetchProjects();
-    fetchPatterns();
-  }, []);
-
-  // checks if user is viewing their own profile, defines tabs based on this
-  //   useEffect(() => {
-  //     const isSelf = userId === authUserId;
-  //     setTabTitles(
-  //       isSelf ? ["My Patterns", "Favourites", "My Projects"] : ["Patterns", "Projects"]
-  //     );
-  //   }, [userId]);
+    useFocusEffect(
+      useCallback(() => {
+        console.log(userId);
+        // fetchProjects();
+        // fetchPatterns();
+        fetchData();
+      }, [userId])
+    );
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
   };
 
   const FlatListContent = ({ item }: { item: any }) => {
-    return activeTab === "Favourites" ? (
-      <FavouritePatterns item={item} />
+    return activeTab === "Patterns" ? (
+    <PathnameContext.Provider value="profile/patterns">
+      <PatternCard pattern={item} />
+    </PathnameContext.Provider>
     ) : (
-      <MyProjects item={item} />
+      <ProjectCard project={item} />
     );
   };
 
-  const FavouritePatterns = ({ item }: { item: any }) => (
-    <Pressable
-      onPress={() =>
-        router.push({
-          pathname:
-            `(auth)/(tabs)/profile/patterns/[_id]` as RelativePathString,
-          params: { _id: item._id },
-        })
-      }
-    >
-      <Card>
-        <Card.Title title={item.title} subtitle={item.description} />
-        <Card.Cover
-          // source={tempImage}
-          source={{
-            uri: item.image_path
-              ? `${imageURL}${item.image_path[0]}`
-              : tempImage,
-          }}
-        />
-      </Card>
-    </Pressable>
-  );
-
-  const MyProjects = ({ item }: { item: any }) => (
-    <Pressable
-      onPress={() =>
-        router.push({
-          pathname:
-            `(auth)/(tabs)/profile/projects/[_id]` as RelativePathString,
-          params: { _id: item._id },
-        })
-      }
-      onLongPress={() => console.log("Long Press")}
-    >
-      <Card >
-        <Card.Title title={item.title} subtitle={item.craft_type} />
-        {/* <Card.Cover
-              source={{
-                uri: item.image_path
-                  ? `${imageURL}${item.image_path[0]}`
-                  : tempImage,
-              }}
-            /> */}
-        <Card.Content>
-          <Text>{formatStatus(item.status)}</Text>
-        </Card.Content>
-      </Card>
-    </Pressable>
-  );
-
   return (
-    <SafeAreaView>
+    <>
       <View>
         <FlatList
-          data={activeTab === "Favourites" ? patterns : projects}
+          data={activeTab === "Patterns" ? patterns : projects}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => <FlatListContent item={item} />}
           keyExtractor={
-            activeTab === "Favourites"
+            activeTab === "Patterns"
               ? (pattern: PatternTypeID) => pattern._id
               : (project: ProjectTypeID) => project._id
           }
@@ -183,20 +156,24 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
               ) : (
                 <ProfileDetails userId={authUserId} />
               )}
-              {userId ? (
+               <Tabs
+                  tabTitles={tabTitles}
+                  onTabChange={handleTabChange}
+                />
+              {/* {userId ? (
                 <Tabs
                   tabTitles={tabTitlesOther}
                   onTabChange={handleTabChange}
                 />
               ) : (
                 <Tabs tabTitles={tabTitlesOwn} onTabChange={handleTabChange} />
-              )}
+              )} */}
             </>
           }
         />
         {/* <Tabs tabTitles={tabTitles} onTabChange={handleTabChange} /> */}
       </View>
-    </SafeAreaView>
+    </>
   );
 };
 

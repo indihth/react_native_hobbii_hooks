@@ -4,7 +4,7 @@ import { axiosAuthGet } from "@/api/axiosInstance";
 import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProjectCard from "@/components/Pattern";
+import ProjectCard from "@/components/PatternDetails";
 import { PatternType, PatternTypeID } from "@/types/index";
 import { API_URL } from "@/config";
 import { Link, router } from "expo-router";

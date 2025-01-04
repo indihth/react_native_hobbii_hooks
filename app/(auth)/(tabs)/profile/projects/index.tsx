@@ -56,7 +56,6 @@ const Projects = () => {
   }
 
   return (
-    // <SafeAreaView className="flex-1 justify-center">
     <View className="flex-1 justify-center">
        <Stack.Screen
         options={{
@@ -86,7 +85,6 @@ const Projects = () => {
 
       {/* <ProjectCard /> */}
     </View>
-    // </SafeAreaView>
   );
 };
 

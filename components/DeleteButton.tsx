@@ -9,7 +9,7 @@ interface DeleteButtonProps {
   text: string;
   id: string;
   session: string | null | undefined;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
@@ -25,10 +25,11 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
 
   const deleteResource = async () => {
     try {
-      console.log("try catch");
+      console.log("delete try catch");
+      console.log(resourceName);
       await axiosDelete(`/${resourceName}/${id}`, session);
-      onDelete();
-      router.replace(`/${resourceName}` as any); // sends user to index, rerenders with update. (unsure on type error)
+      // router.replace(`/${resourceName}` as any); // sends user to index, rerenders with update. (unsure on type error)
+router.back();
     } catch (error) {
       Alert.alert("Error", "Failed to delete resource");
       console.error("Failed to delete resource:", error);

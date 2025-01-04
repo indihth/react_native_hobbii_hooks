@@ -63,6 +63,12 @@ const ProjectForm = ({
   const { session } = useSession();
   const [loading, setLoading] = useState<boolean>(false); // Track loading state
   const [form, setForm] = useState<FormType>(initialFormData);
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
+    new Date(form.started_date || Date.now())
+  );
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(
+    new Date(form.completed_date || Date.now())
+  );
   const [yarns, setYarns] = useState<YarnTypeID[]>();
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]);
   const [selectedYarn, setSelectedYarn] = useState<string>(
@@ -71,7 +77,7 @@ const ProjectForm = ({
   const [colorways, setColorways] = useState<string[]>([]);
   const [selectedColorway, setSelectedColorway] = useState<string>(
     initialFormData.yarns_used.colorway_name[0]
-  );
+  ); // needed?
   const [error, setError] = useState<ErrorType>({});
   const needleSizeOptions = [
     "1.5mm",
@@ -92,8 +98,10 @@ const ProjectForm = ({
   ];
 
   useEffect(() => {
+    // fetching yarn and pattern data for populating form dropdowns
     const fetchData = async () => {
       try {
+        // Promise.all takes array and waits for all promises to resolve before returning
         const [yarnsResponse, patternsResponse] = await Promise.all([
           axiosAuthGet(`/yarns`, session),
           axiosAuthGet(`/patterns`, session),
@@ -119,6 +127,8 @@ const ProjectForm = ({
 
   const handleYarnChange = (value: string) => {
     setSelectedYarn(value);
+
+    // All available colorways not included in the project data, must get from yarns array. Match yarn id from project to get colorway options
     const selectedYarn = yarns?.find((yarn) => yarn._id === value);
     if (selectedYarn) {
       setColorways(selectedYarn.colorways);
@@ -150,25 +160,55 @@ const ProjectForm = ({
     }));
   };
 
-  const onChange = (event: any, selectedDate?: Date) => {
-    const currentDate = selectedDate;
-    setForm((prevState) => ({
-      ...prevState,
-      completed_date: currentDate?.toISOString() || "",
-    }));
+  //   Handles date picker (onChange needed for Android)
+  const onChangeDate = (
+    event: any,
+    selectedDate?: Date,
+    isStartDate: boolean = false // reduce need for two similar functions
+  ) => {
+    if (event.type === "set") {
+      const currentDate = selectedDate;
+
+      // Store date as string in form
+      setForm((prevState) => ({
+        ...prevState,
+        [isStartDate ? "started_date" : "completed_date"]:
+          currentDate?.toISOString() || "", // store as simplified extended ISO format, can display in local format later
+      }));
+
+      if (currentDate) {  // use state to store as Date object for displaying in DateTimePicker
+        isStartDate
+          ? setSelectedStartDate(currentDate)
+          : setSelectedEndDate(currentDate); 
+      }
+    }
   };
 
-  const showMode = (currentMode: "date" | "time") => {
+  const onChangeStartDate = (event: any, selectedDate?: Date) => {
+    onChangeDate(event, selectedDate, true);
+  };
+
+  const onChangeEndDate = (event: any, selectedDate?: Date) => {
+    onChangeDate(event, selectedDate, false);
+  };
+
+  const showMode = (currentMode: "date" | "time", isStartDate: boolean) => {
     DateTimePickerAndroid.open({
-      value: new Date(form.completed_date || Date.now()),
-      onChange,
+      value: isStartDate
+        ? selectedStartDate || new Date()
+        : selectedEndDate || new Date(),
+      onChange: isStartDate ? onChangeStartDate : onChangeEndDate,
       mode: currentMode,
       is24Hour: true,
     });
   };
 
-  const showDatepicker = () => {
-    showMode("date");
+  const showStartDatepicker = () => {
+    showMode("date", true);
+  };
+
+  const showEndDatepicker = () => {
+    showMode("date", false);
   };
 
   return (
@@ -184,9 +224,9 @@ const ProjectForm = ({
         }}
       />
       <ScrollView>
-        <SafeAreaView className="flex-1 mx-5 mt-5">
+        <View className="flex-1 mx-5 mt-5">
           <FormField
-            title="Title"
+            title="Title **required**"
             value={form.title}
             handleChangeText={handleChange("title")}
             error={error.title}
@@ -206,7 +246,7 @@ const ProjectForm = ({
           <Text>Status</Text>
           <RadioButton.Group
             onValueChange={handleChange("status")}
-            value={form.status}
+            value={form.status} // fix type warning
           >
             <RadioButton.Item
               label={formatStatus("in_progress")}
@@ -222,7 +262,7 @@ const ProjectForm = ({
             />
           </RadioButton.Group>
           {error.status && <Text style={{ color: "red" }}>{error.status}</Text>}
-          <Text>Craft Type</Text>
+          <Text>Craft Type **required**</Text>
           <RadioButton.Group
             onValueChange={handleChange("craft_type")}
             value={form.craft_type}
@@ -234,7 +274,7 @@ const ProjectForm = ({
             <Text style={{ color: "red" }}>{error.craft_type}</Text>
           )}
           <View>
-            <Text>Yarns Used</Text>
+            <Text>Yarns Used **required**</Text>
             <Picker
               selectedValue={selectedYarn}
               onValueChange={handleYarnChange}
@@ -275,7 +315,7 @@ const ProjectForm = ({
               </View>
             )}
           </View>
-          <Text>Pattern Used</Text>
+          <Text>Pattern Used **required**</Text>
           <Picker
             selectedValue={form.pattern}
             onValueChange={handleChange("pattern")}
@@ -305,10 +345,14 @@ const ProjectForm = ({
           {error.needle_size && (
             <Text style={{ color: "red" }}>{error.needle_size}</Text>
           )}
-          <Button onPress={showDatepicker}>Show date picker!</Button>
-          <Text>{`date: ${form.completed_date}`}</Text>
+          <Button onPress={showStartDatepicker}>Show start date picker</Button>
+          <Text>
+            Start Date: {selectedStartDate?.toLocaleDateString("en-GB")}
+          </Text>
+          <Button onPress={showEndDatepicker}>Show end date picker</Button>
+          <Text>End Date: {selectedEndDate?.toLocaleDateString("en-GB")}</Text>
           <Button onPress={() => handleSubmit(form)}>Submit</Button>
-        </SafeAreaView>
+        </View>
       </ScrollView>
     </View>
   );

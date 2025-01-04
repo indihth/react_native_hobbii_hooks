@@ -54,9 +54,7 @@ const ProjectDetails = () => {
 
   return (
     <ScrollView>
-      <SafeAreaView>
         <Project project={project} />
-      </SafeAreaView>
     </ScrollView>
   );
 };

@@ -36,6 +36,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#000",
         // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false, // Prevents 'Tabs' from showing in a header, would have two headers
+        headerTitleAlign: "center",
       }}
     >
       <Tabs.Screen
@@ -90,6 +91,7 @@ export default function TabLayout() {
         name="favorites"
         options={{
           title: "Favorites",
+          // headerShown: true,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}

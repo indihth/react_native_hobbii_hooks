@@ -7,14 +7,11 @@ const Layout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="projects" options={{ headerShown: false }} />
-      <Stack.Screen name="patterns" options={{ headerShown: false }} />
-      <Stack.Screen name="[_id]" options={{ headerShown: false }} />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="[_id]"
         options={{
           headerShown: true,
-          title: "Profile",
+          title: "Pattern Details",
           headerShadowVisible: false,
           headerTitleAlign: "center",
           headerLeft: () => (
@@ -31,7 +28,7 @@ const Layout = () => {
             </TouchableOpacity>
           ),
         }}
-      /> */}
+      />
     </Stack>
   );
 };

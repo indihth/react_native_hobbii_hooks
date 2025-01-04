@@ -11,16 +11,16 @@ const CreateProject = () => {
 
   const initialFormData = {
     title: "",
-    status: "",
+    status: undefined, // expecting enum option, empty string is not valid
     craft_type: "",
-    pattern: "",
+    pattern: undefined, // expecting ObjectId, empty string is not valid
     yarns_used: {
-      yarn: "",
+      yarn: undefined, // expecting ObjectId, empty string is not valid
       colorway_name: [""],
     },
     made_for: "",
     project_notes: "",
-    needle_size: "",
+    needle_size: undefined, // expecting enum option, empty string is not valid
     yarn_weight: "",
     started_date: "",
     completed_date: "",
@@ -36,6 +36,7 @@ const CreateProject = () => {
     }
   };
 
+  // passing the initial form and submit function for create
   return <ProjectForm initialFormData={initialFormData} handleSubmit={handleSubmit} />;
 };
 

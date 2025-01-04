@@ -23,7 +23,7 @@ import SuggestedYarns from "@/components/YarnDetails";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import DeleteButton from "@/components/DeleteButton";
 import FavouriteButton from "@/components/FavouriteButton";
-import Pattern from "@/components/Pattern";
+import Pattern from "@/components/PatternDetails";
 
 const PatternDetails = () => {
   const { session } = useSession();

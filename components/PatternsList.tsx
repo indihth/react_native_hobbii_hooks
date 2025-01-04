@@ -3,13 +3,13 @@ import React from "react";
 import { Link, RelativePathString, router } from "expo-router";
 import { Card } from "react-native-paper";
 import { PatternTypeID } from "../types";
+import PatternCard from "./PatternCard";
 
 type PatternsListProps = {
   patterns: PatternTypeID[];
-  source?: string;
 };
 
-const PatternsList: React.FC<PatternsListProps> = ({ patterns, source = "patterns" }) => {
+const PatternsList: React.FC<PatternsListProps> = ({ patterns }) => {
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
   const tempImage = require("@/assets/images/placeholderImage.png");
 
@@ -17,27 +17,7 @@ const PatternsList: React.FC<PatternsListProps> = ({ patterns, source = "pattern
     <FlatList
       data={patterns}
       renderItem={({ item }) => (
-       
-        <Pressable
-          onPress={() =>
-            // router.push(`/${source}/${item._id}`)
-            router.push({
-              pathname: `/feed/[_id]` as RelativePathString,
-              params: { _id: item._id }
-            })
-          }
-        >
-          <Card className="mb-10 ">
-            <Card.Title title={item.title} subtitle={item.description} />
-            <Card.Cover
-              source={{
-                uri: item.image_path
-                  ? `${imageURL}${item.image_path[0]}`
-                  : tempImage,
-              }}
-            />
-          </Card>
-        </Pressable>
+       <PatternCard pattern={item}/>
       )}
       keyExtractor={(pattern: PatternTypeID) => pattern._id}
     />

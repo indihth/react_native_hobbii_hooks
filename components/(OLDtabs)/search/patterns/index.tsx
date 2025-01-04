@@ -4,7 +4,7 @@ import { axiosAuthGet } from "@/api/axiosInstance";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProjectCard from "@/components/Pattern";
+import ProjectCard from "@/components/PatternDetails";
 import { PatternType, PatternTypeID } from "@/types/index";
 import { Link, router, Stack } from "expo-router";
 import { Button, Card, Text, IconButton } from "react-native-paper";
@@ -62,18 +62,20 @@ const Patterns = () => {
   return (
     // <SafeAreaView className="flex-1 justify-center">
     <View className="flex-1 justify-center">
-       <Stack.Screen
+      <Stack.Screen
         options={{
-          title: 'Search',
+          title: "Search",
           headerTitle: (props) => (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{props.children}</Text>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+                {props.children}
+              </Text>
             </View>
           ),
           headerSearchBarOptions: {
-            placeholder: 'Search',
+            placeholder: "Search",
             onChangeText: (event) => setQuery(event.nativeEvent.text),
-            tintColor: '#000',
+            tintColor: "#000",
             autoFocus: true,
             hideWhenScrolling: false,
             onCancelButtonPress: () => {},
@@ -85,7 +87,7 @@ const Patterns = () => {
       <Link href="/patterns/create" asChild>
         <Button>New Pattern</Button>
       </Link>
-      <PatternsList patterns={filteredPatterns} source="patterns"/>
+      <PatternsList patterns={filteredPatterns} source="patterns" />
 
       {/* <ProjectCard /> */}
     </View>

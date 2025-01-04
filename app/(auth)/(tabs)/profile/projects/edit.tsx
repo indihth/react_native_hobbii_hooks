@@ -49,10 +49,12 @@ const EditProject = () => {
     }
   };
 
+  // displays nothing until initialFormData is set
   if (!initialFormData) {
-    return null; // or a loading indicator
+    return null; 
   }
 
+// passing the initial form, submit function and isEditMode for edit
   return <ProjectForm initialFormData={initialFormData} handleSubmit={handleSubmit} isEditMode />;
 };
 

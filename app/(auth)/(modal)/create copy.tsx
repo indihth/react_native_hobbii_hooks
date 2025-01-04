@@ -160,7 +160,7 @@ const Create = () => {
         }}
       />
       <ScrollView>
-        <SafeAreaView className="flex-1 mx-5 mt-5">
+        <View className="flex-1 mx-5 mt-5">
           <FormField
             title="Title"
             value={title}
@@ -266,7 +266,7 @@ const Create = () => {
               onPress={() => Alert.alert("Add another yarn")}
             />
           </View>
-        </SafeAreaView>
+        </View>
       </ScrollView>
     </View>
   );

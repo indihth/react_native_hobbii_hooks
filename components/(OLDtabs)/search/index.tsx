@@ -4,7 +4,7 @@ import { axiosAuthGet } from "@/api/axiosInstance";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProjectCard from "@/components/Pattern";
+import ProjectCard from "@/components/PatternDetails";
 import { PatternTypeID } from "@/types/index";
 import { Link, router, Stack } from "expo-router";
 import { Text, SegmentedButtons } from "react-native-paper";
@@ -27,15 +27,15 @@ const SearchPage = () => {
   const [query, setQuery] = useState<string>("");
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
-    craft_type: 'knit', 
-    yarn_weight: 'dk', 
+    craft_type: "knit",
+    yarn_weight: "dk",
     // hook_size: '4.5', // implement later
   });
 
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
   const [isSelected, setIsSelected] = useState(false);
-  
-  const [value, setValue] = useState('knit');
+
+  const [value, setValue] = useState("knit");
 
   const imageURL = "https://api-images-example.s3.eu-north-1.amazonaws.com/";
   const tempImage = "./placeholderImage.png";
@@ -75,18 +75,20 @@ const SearchPage = () => {
   return (
     // <SafeAreaView className="flex-1 justify-center">
     <View className="flex-1 justify-center">
-       <Stack.Screen
+      <Stack.Screen
         options={{
-          title: 'Search',
+          title: "Search",
           headerTitle: (props) => (
-            <View style={{ flex: 1, flexDirection: 'row' }}>
-              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{props.children}</Text>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+              <Text style={{ fontSize: 24, fontWeight: "bold" }}>
+                {props.children}
+              </Text>
             </View>
           ),
           headerSearchBarOptions: {
-            placeholder: 'Search',
+            placeholder: "Search",
             onChangeText: (event) => setQuery(event.nativeEvent.text),
-            tintColor: '#000',
+            tintColor: "#000",
             autoFocus: true,
             hideWhenScrolling: false,
             onCancelButtonPress: () => {},
@@ -98,22 +100,22 @@ const SearchPage = () => {
         onValueChange={setValue}
         buttons={[
           {
-            value: 'knit',
-            label: 'Knit',
+            value: "knit",
+            label: "Knit",
             // style: styles.button,
             // showSelectedCheck: true,
           },
           {
-            value: 'crochet',
-            label: 'Crochet',
+            value: "crochet",
+            label: "Crochet",
             // style: styles.button,
             // showSelectedCheck: true,
           },
         ]}
         // style={styles.group}
       />
-     
-      <PatternsList patterns={filteredPatterns} source="search/patterns"/>
+
+      <PatternsList patterns={filteredPatterns} source="search/patterns" />
 
       {/* <ProjectCard /> */}
     </View>

@@ -4,7 +4,7 @@ import { axiosAuthGet } from "@/api/axiosInstance";
 import { useEffect, useState } from "react";
 import { FlatList, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProjectCard from "@/components/Pattern";
+import ProjectCard from "@/components/PatternDetails";
 import { Link, router, Stack } from "expo-router";
 import { Button, Card, Text, IconButton } from "react-native-paper";
 import LoadingIndicator from "@/components/LoadingIndicator";
@@ -12,7 +12,7 @@ import SearchInput from "@/components/SearchInput";
 import PatternsList from "@/components/PatternsList";
 import { PatternTypeID } from "@/types/index";
 import { useSession } from "@/contexts/AuthContext";
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from "expo-router";
 
 type PatternsProps = {
   resource: string;

@@ -58,7 +58,7 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
         title="Start Date"
         value={
           project.started_date
-            ? new Date(project.started_date).toLocaleDateString()
+            ? new Date(project.started_date).toLocaleDateString("en-GB")
             : ""
         }
       />
@@ -66,7 +66,7 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
         title="Completed Date"
         value={
           project.completed_date
-            ? new Date(project.completed_date).toLocaleDateString()
+            ? new Date(project.completed_date).toLocaleDateString("en-GB")
             : ""
         }
       />
@@ -119,7 +119,6 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
             text="Delete project"
             id={project._id}
             session={session}
-            onDelete={() => console.log("pressed")}
           />
           {/* // onDelete={() => Alert.alert("Delete Project", "Project has been deleted successfully")} /> */}
           {/* onDelete={() => router.push("/projects")} /> */}
