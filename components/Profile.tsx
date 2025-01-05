@@ -128,17 +128,13 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
         ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
         ListHeaderComponent={
           <>
-            {showBackButton ?? (
-              <View style={styles.header}>
-                <TouchableOpacity
-                  style={styles.backButton}
-                  onPress={() => router.back()}
-                >
+              {showBackButton ? (
+                <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+                {/* <TouchableOpacity style={styles.backButton} onPress={() => router.back()}> */}
                   <Ionicons name="chevron-back" size={24} color="#000" />
                   <Text style={styles.backText}>Back</Text>
                 </TouchableOpacity>
-              </View>
-            )}
+              ) : null}
 
             {/* Return either logged in user profile or view another users' profile */}
             {userId ? (

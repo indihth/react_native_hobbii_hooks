@@ -53,7 +53,7 @@ const PatternDetails: React.FC<PatternProps> = ({
   const handleRestoreButton = async () => {
     try {
       console.log(`/patterns/${pattern._id}/restore`);
-      // await axiosRestore(`/patterns/${pattern._id}/restore`, session);
+      await axiosRestore(`/patterns/${pattern._id}/restore`, session);
       // router.push(`/(auth)/(tabs)/profile/patterns/${pattern._id}`);
       // Alert.alert("Pattern restored successfully");
       // Handle successful restore, e.g., show a success message or update state
@@ -122,8 +122,8 @@ const PatternDetails: React.FC<PatternProps> = ({
     <View>
       <View className="flex-1">
         <ImageBackground
-          source={tempImage}
-          // source={{ uri: `${pattern.image_path ?? [0]}` }}
+          // source={tempImage}
+          source={{ uri: `${pattern.image_path ?? [0]}` }}
           resizeMode="cover"
           style={{
             height: 500,
@@ -144,7 +144,7 @@ const PatternDetails: React.FC<PatternProps> = ({
           <Text variant="displaySmall">{pattern.title}</Text>
             <Link
             push
-            href={`/profile/${patternUserId}`}
+            href={`/home/profile/${patternUserId}` as RelativePathString}
             asChild
             >
             <Text variant="bodyMedium">by {pattern.user?.full_name}</Text>

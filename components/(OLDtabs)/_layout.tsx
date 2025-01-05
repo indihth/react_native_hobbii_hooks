@@ -20,13 +20,13 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#000",
         // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false, // Prevents 'Tabs' from showing in a header, would have two headers
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
+        // tabBarStyle: Platform.select({
+        //   ios: {
+        //     // Use a transparent background on iOS to show the blur effect
+        //     position: "absolute",
+        //   },
+        //   default: {},
+        // }),
       }}
     >
       <Tabs.Screen

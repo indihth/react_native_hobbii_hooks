@@ -27,12 +27,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         <Card >
           <Card.Title title={project.title} subtitle={project.craft_type} />
           <Card.Cover
-                // source={{
-                //   uri: project.image_path
-                //     ? `${imageURL}${project.image_path}`
-                //     : tempImage,
-                // }}
-                source={tempImage}
+                source={{
+                  uri: project.image_path
+                    ? `${imageURL}${project.image_path}`
+                    : tempImage,
+                }}
+                // source={tempImage}
               />
           <Card.Content>
             <Text>{formatStatus(project.status)}</Text>

@@ -11,8 +11,8 @@ import { useSession } from "@/contexts/AuthContext";
 
 const styles = StyleSheet.create({
   createIconContainer: {
-    // backgroundColor: "#fff",
-    backgroundColor: Colors.itemBackground,
+    backgroundColor: "#fff",
+    // backgroundColor: Colors.itemBackground,
     padding: 10,
     borderRadius: 8,
   },
@@ -39,21 +39,6 @@ export default function TabLayout() {
         headerTitleAlign: "center",
       }}
     >
-      {/* <Tabs.Screen
-        name="feed"
-        options={{
-          href: null,
-          title: "Home",
-          headerShown: false,
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      /> */}
       <Tabs.Screen
         name="home"
         options={{
@@ -71,7 +56,6 @@ export default function TabLayout() {
         name="favorites"
         options={{
           title: "Favorites",
-          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "heart" : "heart-outline"}
@@ -104,7 +88,6 @@ export default function TabLayout() {
         name="profile"
         options={{
           title: "Profile",
-          headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
               name={focused ? "person" : "person-outline"}

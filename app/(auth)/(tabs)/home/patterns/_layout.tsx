@@ -7,39 +7,15 @@ const Layout = () => {
   return (
     <Stack
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         headerTitleAlign: "center",
         headerShadowVisible: false,
         contentStyle: { backgroundColor: "white" },
       }}
     >
       <Stack.Screen
-        name="index"
-        options={{
-          headerShown: true,
-          title: "Archived Patterns",
-          headerShadowVisible: false,
-          headerTitleAlign: "center",
-          headerLeft: () => (
-            <TouchableOpacity
-              className="flex-row items-center"
-              onPress={() => router.back()}
-            >
-              <Ionicons name="chevron-back" size={24} color="#000" />
-              <Text
-                // style={styles.backText}
-                className="flex-row items-center"
-              >
-                Back
-              </Text>
-            </TouchableOpacity>
-          ),
-        }}
-      />
-      <Stack.Screen
         name="edit"
         options={{
-          headerShown: true,
           title: "Edit Pattern",
           headerShadowVisible: false,
           headerTitleAlign: "center",
@@ -62,7 +38,6 @@ const Layout = () => {
       <Stack.Screen
         name="[_id]"
         options={{
-          headerShown: true,
           title: "Pattern Details",
           headerShadowVisible: false,
           headerTitleAlign: "center",

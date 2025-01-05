@@ -15,10 +15,12 @@ export const Colors = {
 
   ...Platform.select({
     ios: {
-      submit: PlatformColor('systemBlueColor'),
+      // submit: PlatformColor('systemBlueColor'),
+      submit: 'black'
     },
     android: {
-      submit: PlatformColor('@android:color/system_primary_light'),
+      // submit: PlatformColor('@android:color/system_primary_light'),
+      submit: 'black'
     },
     default: { submit: 'black' },
   }),

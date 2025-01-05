@@ -187,7 +187,7 @@ export default function Page() {
     formData.append("meterage", form.meterage);
 
     // Append image to form data, first convert to blob
-    const imageUri = Platform.OS === 'android' ? image[0].uri : image[0].uri.replace('file://', '');
+    // const imageUri = Platform.OS === 'android' ? image[0].uri : image[0].uri.replace('file://', '');
     const response = await fetch(imageUri);
     const blob = await response.blob();
     formData.append("image", blob, image[0].filename);

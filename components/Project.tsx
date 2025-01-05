@@ -112,8 +112,8 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
       />
       <View className="flex-1">
         <ImageBackground
-          source={tempImage}
-          // source={{ uri: `${project.image_path ?? [0]}` }}
+          // source={tempImage}
+          source={{ uri: `${project.image_path ?? [0]}` }}
           resizeMode="cover"
           style={{
             height: 500,

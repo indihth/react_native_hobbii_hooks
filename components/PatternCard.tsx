@@ -28,12 +28,12 @@ const PatternCard = ({ pattern }: PatternCardProps) => {
       <Card>
         <Card.Title title={pattern.title} subtitle={pattern.description} />
         <Card.Cover
-          source={tempImage}
-          // source={{
-          //   uri: pattern.image_path.length > 0
-          //     ? `${imageURL}${pattern.image_path[0]}`
-          //     : tempImage,
-          // }}
+          // source={tempImage}
+          source={{
+            uri: pattern.image_path.length > 0
+              ? `${imageURL}${pattern.image_path[0]}`
+              : tempImage,
+          }}
         />
       </Card>
     </Pressable>

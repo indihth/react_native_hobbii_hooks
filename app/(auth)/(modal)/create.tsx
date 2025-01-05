@@ -4,6 +4,7 @@ import { axiosPost } from "@/api/axiosInstance";
 import { useSession } from "@/contexts/AuthContext";
 import ProjectForm from "@/components/ProjectForm";
 import { FormType } from "@/types/index";
+import { ScrollView } from "react-native";
 
 
 const CreateProject = () => {
@@ -37,7 +38,11 @@ const CreateProject = () => {
   };
 
   // passing the initial form and submit function for create
-  return <ProjectForm initialFormData={initialFormData} handleSubmit={handleSubmit} />;
+  return (
+    <ScrollView>
+      <ProjectForm initialFormData={initialFormData} handleSubmit={handleSubmit} />
+    </ScrollView>
+  );
 };
 
 export default CreateProject;
