@@ -5,7 +5,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Layout = () => {
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: "white" },
+      }}
+    >
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="projects" options={{ headerShown: false }} />
       <Stack.Screen name="patterns" options={{ headerShown: false }} />

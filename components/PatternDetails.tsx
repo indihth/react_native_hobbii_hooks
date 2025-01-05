@@ -1,15 +1,22 @@
-import { ImageBackground, useWindowDimensions, View } from "react-native";
+import {
+  Alert,
+  ImageBackground,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import React, { useState } from "react";
 import { PatternTypeID } from "@/types";
 import FavouriteButton from "./FavouriteButton";
-import { Link } from "expo-router";
+import { Link, RelativePathString, router } from "expo-router";
 import DeleteButton from "./DeleteButton";
 import { TabView } from "react-native-tab-view";
 import DetailElement from "./DetailElement";
 import YarnDetails from "./YarnDetails";
-import { useSession } from "@/contexts/AuthContext";
+import { useAuth, useSession } from "@/contexts/AuthContext";
 import Tabs from "./Tabs";
+import { usePathname } from "@/contexts/PathnameContext";
+import { axiosRestore } from "@/api/axiosInstance";
 
 type PatternProps = {
   pattern: PatternTypeID;
@@ -17,13 +24,19 @@ type PatternProps = {
   showBackButton?: boolean;
 };
 
-const Pattern: React.FC<PatternProps> = ({
+const PatternDetails: React.FC<PatternProps> = ({
   pattern,
   source = "patterns",
   showBackButton = false,
 }) => {
   const { session } = useSession();
+  const { authUserId } = useAuth();
+
+  const pathname = usePathname(); // retrieving the current pathname from the context
   const patternUserId = pattern.user?._id;
+  const isSelf = pattern.user._id === authUserId;
+  const isArchived = pattern.deleted;
+
   // const id = pattern._id;
 
   const [index, setIndex] = useState(0);
@@ -35,6 +48,19 @@ const Pattern: React.FC<PatternProps> = ({
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
+  };
+
+  const handleRestoreButton = async () => {
+    try {
+      console.log(`/patterns/${pattern._id}/restore`);
+      // await axiosRestore(`/patterns/${pattern._id}/restore`, session);
+      // router.push(`/(auth)/(tabs)/profile/patterns/${pattern._id}`);
+      // Alert.alert("Pattern restored successfully");
+      // Handle successful restore, e.g., show a success message or update state
+    } catch (error) {
+      console.error("Failed to restore pattern:", error);
+      // Handle error, e.g., show an error message
+    }
   };
 
   // Tab view for Pattern Information and Suggested Yarns
@@ -52,9 +78,45 @@ const Pattern: React.FC<PatternProps> = ({
     </View>
   );
 
-  const YarnsRoute = () => (
-    <YarnDetails yarn={pattern?.suggested_yarn} />
-  );
+  const Buttons = () => {
+    return (
+      <View className="flex-row">
+        {isArchived ? (
+          <>
+            <Button onPress={handleRestoreButton}>Restore Pattern</Button>
+            <DeleteButton
+              resourceName="patterns"
+              text="Permanently pattern"
+              id={pattern._id}
+              session={session}
+              hardDelete
+            />
+          </>
+        ) : (
+          <>
+            {/* Pass id as a url query */}
+            <Link push href={`${pathname}/edit?_id=${pattern._id}` as RelativePathString} asChild>
+              <Button
+              // onPress={() =>
+              //         router.push({
+              //           pathname: `(auth)/(tabs)/profile/patterns/edit` as RelativePathString,
+              //           params: { _id: pattern._id },
+              //         })}
+              >
+                Edit Project
+              </Button>
+            </Link>
+            <DeleteButton
+              resourceName="patterns"
+              text="Delete pattern"
+              id={pattern._id}
+              session={session}
+            />
+          </>
+        )}
+      </View>
+    );
+  };
 
   return (
     <View>
@@ -80,36 +142,27 @@ const Pattern: React.FC<PatternProps> = ({
       <View className="px-3 pt-3">
         <View className="flex-row justify-between items-baseline mb-5">
           <Text variant="displaySmall">{pattern.title}</Text>
-            <Link 
-            push 
-            href={`/(auth)/(tabs)/profile/${patternUserId}`} 
-            // href={{ pathname: `/(auth)/(tabs)/profile/${patternUserId}`, params: {patternUserId} }} 
+            <Link
+            push
+            href={`/profile/${patternUserId}`}
             asChild
             >
             <Text variant="bodyMedium">by {pattern.user?.full_name}</Text>
             </Link>
         </View>
-        {/* Pass id as a url query */}
-        <View className="flex-row">
-          <Link push href={`/${source}/edit?id=${pattern._id}`} asChild>
-            <Button>Edit Pattern</Button>
-          </Link>
-          <DeleteButton
-            resourceName="patterns"
-            text="Delete Pattern"
-            id={pattern._id}
-            session={session}
-            onDelete={() => console.log("pressed")}
-          />
-          {/* // onDelete={() => Alert.alert("Delete Pattern", "Pattern has been deleted successfully")} /> */}
-          {/* onDelete={() => router.push("/patterns")} /> */}
-        </View>
+
+        {/* Shows edit and delete only if user is owner */}
+        {isSelf && <Buttons />}
 
         <Tabs onTabChange={handleTabChange} tabTitles={tabTitles} />
-        {activeTab === "Pattern" ? <InfoRoute /> : <YarnsRoute />}
+        {activeTab === "Pattern" ? (
+          <InfoRoute />
+        ) : (
+          <YarnDetails yarn={pattern?.suggested_yarn} />
+        )}
       </View>
     </View>
   );
 };
 
-export default Pattern;
+export default PatternDetails;

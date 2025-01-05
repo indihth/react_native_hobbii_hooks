@@ -1,7 +1,7 @@
-import { View, Text, FlatList, Pressable } from "react-native";
+import { View, FlatList, Pressable, StyleSheet } from "react-native";
 import React from "react";
 import { Link, RelativePathString, router } from "expo-router";
-import { Card } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { PatternTypeID } from "../types";
 import PatternCard from "./PatternCard";
 
@@ -16,12 +16,22 @@ const PatternsList: React.FC<PatternsListProps> = ({ patterns }) => {
   return (
     <FlatList
       data={patterns}
-      renderItem={({ item }) => (
-       <PatternCard pattern={item}/>
-      )}
+      ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+      renderItem={({ item }) => <PatternCard pattern={item} />}
       keyExtractor={(pattern: PatternTypeID) => pattern._id}
+      ListEmptyComponent={<Text style={styles.emptyText} variant="titleMedium">No patterns</Text>}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  emptyText: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    marginTop: '50%',
+  },
+});
 
 export default PatternsList;

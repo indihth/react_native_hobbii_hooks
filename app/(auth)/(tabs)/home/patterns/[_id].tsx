@@ -5,7 +5,7 @@ import Pattern from '@/components/Pattern';
 
 const PatternPage = () => {
     return (
-        <PathnameContext.Provider value="profile/patterns/">
+        <PathnameContext.Provider value="home/patterns/">
             <Pattern />
         </PathnameContext.Provider>
     );

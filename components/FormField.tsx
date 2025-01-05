@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { TouchableOpacity, View, Image } from "react-native";
-import { TextInput, Text } from "react-native-paper";
+import { TextInput, Text, HelperText } from "react-native-paper";
 
 interface FormFieldProps {
   title: string;
@@ -29,19 +29,24 @@ const FormField: React.FC<FormFieldProps> = ({
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-      <View className={`mb-5 ${otherStyles}`}>
-        <TextInput
+    <View className={`mb-5 ${otherStyles}`}>
+      <TextInput
         label={title}
-          value={value}
-          placeholder={placeholder}
-          placeholderTextColor="#7B7B8B"
-          onChangeText={handleChangeText}
-          secureTextEntry={title === "Password" && !showPassword}
-          error={error ? true : false}
-          className={className}
-          {...props}
-        />
-      </View>
+        value={value}
+        placeholder={placeholder}
+        placeholderTextColor="#7B7B8B"
+        onChangeText={handleChangeText}
+        secureTextEntry={title === "Password" && !showPassword}
+        error={!!error}
+        className={className}
+        {...props}
+      />
+      {error && (
+        <HelperText type="error" visible={!!error}>
+          {error}
+        </HelperText>
+      )}
+    </View>
   );
 };
 

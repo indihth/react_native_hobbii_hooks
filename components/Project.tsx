@@ -1,14 +1,19 @@
-import { ImageBackground, useWindowDimensions, View } from "react-native";
+import {
+  ImageBackground,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import React, { useState } from "react";
 import { ProjectTypeID, YarnTypeID } from "@/types";
 import FavouriteButton from "./FavouriteButton";
-import { Link, RelativePathString, router } from "expo-router";
+import { Link, RelativePathString, router, Stack } from "expo-router";
 import DeleteButton from "./DeleteButton";
 import { TabView } from "react-native-tab-view";
 import DetailElement from "./DetailElement";
 import YarnDetails from "./YarnDetails";
-import { useSession } from "@/contexts/AuthContext";
+import { useAuth, useSession } from "@/contexts/AuthContext";
 import Tabs from "./Tabs";
 import { formatStatus } from "@/utils/formatStatus";
 
@@ -20,11 +25,10 @@ type ProjectProps = {
 
 const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
   const { session } = useSession();
-  // const id = project._id;
+  const { authUserId } = useAuth();
 
-  const [index, setIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("Project");
-  const layout = useWindowDimensions();
+  const isSelf = project.user._id === authUserId;
 
   const tabTitles = ["Project", "Yarn"];
   const tempImage = require("@/assets/images/placeholderImage.png");
@@ -34,9 +38,6 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
     yarn = project.yarns_used[0].yarn;
   }
 
-  // if (project?.yarns_used[0].yarn ) {
-  //   yarn = project?.yarns_used[0].yarn;
-  // }
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
   };
@@ -78,10 +79,37 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
     </View>
   );
 
-  const YarnsRoute = () => <YarnDetails yarn={yarn} />;
+  const Button = () => {
+    return (
+      <View className="flex-row">
+        <DeleteButton
+          resourceName="projects"
+          text="Delete project"
+          id={project._id}
+          session={session}
+        />
+      </View>
+    );
+  };
 
   return (
     <View>
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: `/profile/projects/edit`,
+                  params: { _id: project._id },
+                })
+              }
+            >
+              <Text>Edit</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <View className="flex-1">
         <ImageBackground
           source={tempImage}
@@ -98,35 +126,14 @@ const Project: React.FC<ProjectProps> = ({ project, source = "projects" }) => {
       <View className="px-3 pt-3">
         {/* <Text>{_id}</Text> */}
         <View className="flex-row justify-between items-baseline mb-5">
+          {/* Shows edit and delete only if user is owner */}
           <Text variant="displaySmall">{project.title}</Text>
           <Text variant="bodyMedium">{formatStatus(project.status)}</Text>
         </View>
-        {/* Pass id as a url query */}
-        <View className="flex-row">
-          <Link push href={`profile/projects/edit?_id=${project._id}`} asChild>
-            <Button
-            // onPress={() =>
-            //         router.push({
-            //           pathname: `(auth)/(tabs)/profile/patterns/edit` as RelativePathString,
-            //           params: { _id: project._id },
-            //         })}
-            >
-              Edit Project
-            </Button>
-          </Link>
-          <DeleteButton
-            resourceName="projects"
-            text="Delete project"
-            id={project._id}
-            session={session}
-          />
-          {/* // onDelete={() => Alert.alert("Delete Project", "Project has been deleted successfully")} /> */}
-          {/* onDelete={() => router.push("/projects")} /> */}
-        </View>
-        <Button onPress={() => console.log(project)}>Back</Button>
 
         <Tabs onTabChange={handleTabChange} tabTitles={tabTitles} />
-        {activeTab === "Project" ? <InfoRoute /> : <YarnsRoute />}
+        {activeTab === "Project" ? <InfoRoute /> : <YarnDetails yarn={yarn} />}
+        <View className="items-center">{isSelf && <Button />}</View>
       </View>
     </View>
   );

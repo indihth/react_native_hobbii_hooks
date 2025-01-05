@@ -10,10 +10,8 @@ import { formatStatus } from "@/utils/formatStatus";
 // Components
 import FormField from "@/components/FormField";
 import { Picker } from "@react-native-picker/picker";
-import DateTimePicker, {
-  DateTimePickerAndroid,
-} from "@react-native-community/datetimepicker";
-import { Button, FAB, RadioButton } from "react-native-paper";
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
+import { Button, HelperText, RadioButton } from "react-native-paper";
 
 type ProjectFormProps = {
   initialFormData: FormType;
@@ -36,6 +34,7 @@ type ErrorType = {
   yarn_weight?: string;
   started_date?: string;
   completed_date?: string;
+  [key: string]: string | undefined;
 };
 
 type FormType = {
@@ -66,9 +65,10 @@ const ProjectForm = ({
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
     new Date(form.started_date || Date.now())
   );
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(
-    new Date(form.completed_date || Date.now())
-  );
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+  // const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(
+  //   new Date(form.completed_date || Date.now())
+  // );
   const [yarns, setYarns] = useState<YarnTypeID[]>();
   const [patterns, setPatterns] = useState<PatternTypeID[]>([]);
   const [selectedYarn, setSelectedYarn] = useState<string>(
@@ -176,10 +176,11 @@ const ProjectForm = ({
           currentDate?.toISOString() || "", // store as simplified extended ISO format, can display in local format later
       }));
 
-      if (currentDate) {  // use state to store as Date object for displaying in DateTimePicker
+      if (currentDate) {
+        // use state to store as Date object for displaying in DateTimePicker
         isStartDate
           ? setSelectedStartDate(currentDate)
-          : setSelectedEndDate(currentDate); 
+          : setSelectedEndDate(currentDate);
       }
     }
   };
@@ -211,6 +212,39 @@ const ProjectForm = ({
     showMode("date", false);
   };
 
+  const requiredFields = [
+    "title",
+    "made_for",
+    "status",
+    "craft_type",
+    "pattern",
+    "yarns_used.yarn",
+  ];
+
+  const validateForm = () => {
+    const newErrors: ErrorType = {};
+    requiredFields.forEach((field) => {
+      const fieldParts = field.split(".");
+      let value = form;
+      fieldParts.forEach((part) => {
+        value = value[part];
+      });
+      if (!value) {
+        newErrors[fieldParts[fieldParts.length - 1]] = `${
+          fieldParts[fieldParts.length - 1]
+        } is required`;
+      }
+    });
+    setError(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleFormSubmit = () => {
+    if (validateForm()) {
+      handleSubmit(form);
+    }
+  };
+
   return (
     <View>
       <Stack.Screen
@@ -221,17 +255,21 @@ const ProjectForm = ({
               <Text>Cancel</Text>
             </TouchableOpacity>
           ),
+          headerRight: () => (
+            <TouchableOpacity onPress={handleFormSubmit}>
+              <Text>Done</Text>
+            </TouchableOpacity>
+          ),
         }}
       />
       <ScrollView>
         <View className="flex-1 mx-5 mt-5">
           <FormField
-            title="Title **required**"
+            title="Title "
             value={form.title}
             handleChangeText={handleChange("title")}
             error={error.title}
           />
-          {error.title && <Text style={{ color: "red" }}>{error.title}</Text>}
           <FormField
             title="Made For"
             value={form.made_for}
@@ -240,13 +278,10 @@ const ProjectForm = ({
             multiline={true}
             numberOfLines={4}
           />
-          {error.made_for && (
-            <Text style={{ color: "red" }}>{error.made_for}</Text>
-          )}
           <Text>Status</Text>
           <RadioButton.Group
             onValueChange={handleChange("status")}
-            value={form.status} // fix type warning
+            value={form.status || ""} // fix type warning
           >
             <RadioButton.Item
               label={formatStatus("in_progress")}
@@ -261,8 +296,11 @@ const ProjectForm = ({
               value="hibernating"
             />
           </RadioButton.Group>
-          {error.status && <Text style={{ color: "red" }}>{error.status}</Text>}
-          <Text>Craft Type **required**</Text>
+          <HelperText type="error" visible={!!error.status}>
+              A status is required
+            </HelperText>
+
+          <Text>Craft Type </Text>
           <RadioButton.Group
             onValueChange={handleChange("craft_type")}
             value={form.craft_type}
@@ -270,11 +308,11 @@ const ProjectForm = ({
             <RadioButton.Item label="Crochet" value="crochet" />
             <RadioButton.Item label="Knitting" value="knitting" />
           </RadioButton.Group>
-          {error.craft_type && (
-            <Text style={{ color: "red" }}>{error.craft_type}</Text>
-          )}
+          <HelperText type="error" visible={!!error.craft_type}>
+              A craft type is required
+            </HelperText>
           <View>
-            <Text>Yarns Used **required**</Text>
+            <Text>Yarns Used </Text>
             <Picker
               selectedValue={selectedYarn}
               onValueChange={handleYarnChange}
@@ -288,9 +326,9 @@ const ProjectForm = ({
                 />
               ))}
             </Picker>
-            {error.yarns_used?.yarn && (
-              <Text style={{ color: "red" }}>{error.yarns_used?.yarn}</Text>
-            )}
+            <HelperText type="error" visible={!!error.yarns_used?.yarn}>
+              A yarn is required
+            </HelperText>
             {colorways.length > 0 && (
               <View>
                 <Text>Colorway</Text>
@@ -307,15 +345,10 @@ const ProjectForm = ({
                     />
                   ))}
                 </Picker>
-                {error.yarns_used?.colorway_name && (
-                  <Text style={{ color: "red" }}>
-                    {error.yarns_used.colorway_name}
-                  </Text>
-                )}
               </View>
             )}
           </View>
-          <Text>Pattern Used **required**</Text>
+          <Text>Pattern Used </Text>
           <Picker
             selectedValue={form.pattern}
             onValueChange={handleChange("pattern")}
@@ -329,9 +362,9 @@ const ProjectForm = ({
               />
             ))}
           </Picker>
-          {error.pattern && (
-            <Text style={{ color: "red" }}>{error.pattern}</Text>
-          )}
+          <HelperText type="error" visible={!!error.pattern}>
+              A yarn is required
+            </HelperText>
           <Text>Needle/hook size</Text>
           <Picker
             selectedValue={form.needle_size}
@@ -342,16 +375,24 @@ const ProjectForm = ({
               <Picker.Item key={size} label={size} value={size} />
             ))}
           </Picker>
-          {error.needle_size && (
-            <Text style={{ color: "red" }}>{error.needle_size}</Text>
-          )}
-          <Button onPress={showStartDatepicker}>Show start date picker</Button>
-          <Text>
-            Start Date: {selectedStartDate?.toLocaleDateString("en-GB")}
-          </Text>
-          <Button onPress={showEndDatepicker}>Show end date picker</Button>
-          <Text>End Date: {selectedEndDate?.toLocaleDateString("en-GB")}</Text>
-          <Button onPress={() => handleSubmit(form)}>Submit</Button>
+
+
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+            {selectedStartDate && (
+              <Text style={{ marginLeft: 10 }}>
+              Start Date: {selectedStartDate.toLocaleDateString("en-GB")}
+              </Text>
+            )}
+            <Button onPress={showStartDatepicker}>Select start date</Button>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+            {selectedEndDate && (
+              <Text style={{ marginLeft: 10 }}>
+              End Date: {selectedEndDate.toLocaleDateString("en-GB")}
+              </Text>
+            )}
+            <Button onPress={showEndDatepicker}>Select end date</Button>
+            </View>
         </View>
       </ScrollView>
     </View>

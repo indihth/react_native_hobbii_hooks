@@ -4,6 +4,7 @@ import { useAuth, useSession } from "@/contexts/AuthContext";
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { UserType } from "@/types/UserType";
 import { Link, useFocusEffect } from "expo-router";
+import { Button } from "react-native-paper";
 
 type ProfileDetailsProps = {
   userId?: string | null;
@@ -41,7 +42,7 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
   );
 
   return (
-    <View className="" style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.profileContainer}>
         <View style={styles.profileTextContainer}>
           <Text style={styles.name}>{user?.full_name}</Text>
@@ -80,20 +81,11 @@ const ProfileDetails = ({ userId }: ProfileDetailsProps) => {
                 <Text style={styles.buttonText}>Edit profile</Text>
               </TouchableOpacity>
             </Link>
+            <Link href="/(auth)/(tabs)/profile/patterns" asChild>
             <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Share profile</Text>
-            </TouchableOpacity>
-          </>
-        )}
-
-        {!isSelf && (
-          <>
-            <TouchableOpacity style={styles.fullButton}>
-              <Text style={styles.fullButtonText}>Follow</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Mention</Text>
-            </TouchableOpacity>
+                <Text style={styles.buttonText}>Archived Patterns</Text>
+              </TouchableOpacity>
+            </Link>
           </>
         )}
       </View>
@@ -120,7 +112,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 14,
-    color: "gray",
+    // color: "gray",
   },
   image: {
     width: 50,
@@ -155,13 +147,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,
-    backgroundColor: "#000",
+    // backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
   fullButtonText: {
     fontWeight: "bold",
-    color: "white",
+    // color: "white",
   },
 });
 

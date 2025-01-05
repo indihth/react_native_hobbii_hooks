@@ -7,6 +7,7 @@ import { ScrollView, SafeAreaView, Text } from "react-native";
 import { useSession } from "@/contexts/AuthContext";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import Project from "@/components/Project";
+import { PathnameContext, PathnameProvider } from "@/contexts/PathnameContext";
 
 const ProjectDetails = () => {
   const { session } = useSession();
@@ -54,7 +55,9 @@ const ProjectDetails = () => {
 
   return (
     <ScrollView>
+      <PathnameContext.Provider value="profile/projects">
         <Project project={project} />
+      </PathnameContext.Provider>
     </ScrollView>
   );
 };

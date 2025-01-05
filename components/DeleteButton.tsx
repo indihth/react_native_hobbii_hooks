@@ -10,6 +10,7 @@ interface DeleteButtonProps {
   id: string;
   session: string | null | undefined;
   onDelete?: () => void;
+  hardDelete?: boolean;
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({
@@ -18,18 +19,21 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   id,
   session,
   onDelete,
+  hardDelete = false
 }) => {
   const [visible, setVisible] = useState(false);
 
   const hideDialog = () => setVisible(false);
 
   const deleteResource = async () => {
+    // Set to hard delete endpoint if hardDelete is true
+    const endpoint = hardDelete ? `/${resourceName}/${id}/hard` : `/${resourceName}/${id}`;
     try {
-      console.log("delete try catch");
-      console.log(resourceName);
-      await axiosDelete(`/${resourceName}/${id}`, session);
+      setVisible(false);
+      await axiosDelete(endpoint, session);
+      console.log("after delete");
       // router.replace(`/${resourceName}` as any); // sends user to index, rerenders with update. (unsure on type error)
-router.back();
+      router.back();
     } catch (error) {
       Alert.alert("Error", "Failed to delete resource");
       console.error("Failed to delete resource:", error);
@@ -48,12 +52,21 @@ router.back();
           <Dialog.Icon icon="alert" />
           <Dialog.Title className="text-center">Delete</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyMedium">Are you sure you want to delete this?</Text>
+            <Text variant="bodyMedium">
+              Are you sure you want to delete this?
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
-          <Button onPress={() => setVisible(false)}>Cancel</Button>
-          <Button onPress={deleteResource} mode="contained" icon="delete" style={{ paddingHorizontal: 5 }}>Yes</Button>
-        </Dialog.Actions>
+            <Button onPress={() => setVisible(false)}>Cancel</Button>
+            <Button
+              onPress={deleteResource}
+              mode="contained"
+              icon="delete"
+              style={{ paddingHorizontal: 5 }}
+            >
+              Yes
+            </Button>
+          </Dialog.Actions>
         </Dialog>
       </Portal>
     </View>

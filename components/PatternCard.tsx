@@ -21,19 +21,19 @@ const PatternCard = ({ pattern }: PatternCardProps) => {
         router.push({
           // dynamic routing, component can be used in different stacks and retain correct navigation
           pathname: `(auth)/(tabs)/${pathname}/[_id]` as RelativePathString,
-          params: { _id: pattern._id },
+          params: { _id: pattern._id, pathname: pathname },
         })
       }
     >
       <Card>
         <Card.Title title={pattern.title} subtitle={pattern.description} />
         <Card.Cover
-          // source={tempImage}
-          source={{
-            uri: pattern.image_path
-              ? `${imageURL}${pattern.image_path[0]}`
-              : tempImage,
-          }}
+          source={tempImage}
+          // source={{
+          //   uri: pattern.image_path.length > 0
+          //     ? `${imageURL}${pattern.image_path[0]}`
+          //     : tempImage,
+          // }}
         />
       </Card>
     </Pressable>

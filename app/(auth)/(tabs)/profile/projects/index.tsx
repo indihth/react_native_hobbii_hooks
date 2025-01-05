@@ -1,6 +1,6 @@
 import { axiosAuthGet } from "@/api/axiosInstance";
 import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, useSession } from "@/contexts/AuthContext";
 
 import { View } from "react-native";
 import { PatternTypeID } from "@/types/index";
@@ -8,11 +8,14 @@ import { Stack } from "expo-router";
 import { Text } from "react-native-paper";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import PatternsList from "@/components/PatternsList";
+import ProjectsList from "@/components/ProjectsList";
 
 // Placeholder image
 // import placeholderImage from '@/assets/images/placeholderImage'
 
 const Projects = () => {
+    const { session } = useSession();
+  
   const [projects, setPatterns] = useState<PatternTypeID[]>([]); // type of an array of Projects
   const [filteredPatterns, setFilteredPatterns] = useState<PatternTypeID[]>([]);
   const [query, setQuery] = useState<string>("");
@@ -27,7 +30,7 @@ const Projects = () => {
     const fetchPatterns = async () => {
       try {
         setLoading(true); // display loading text until api call is completed
-        const response = await axiosAuthGet("/projects");
+        const response = await axiosAuthGet("/projects/archived", session);
         setPatterns(response.data);
       } catch (e) {
         console.error(e);
@@ -81,7 +84,7 @@ const Projects = () => {
       {/* <Link href="/projects/create" asChild>
         <Button>New Pattern</Button>
       </Link> */}
-      <PatternsList projects={filteredPatterns} source="projects"/>
+      <ProjectsList projects={filteredPatterns} />
 
       {/* <ProjectCard /> */}
     </View>

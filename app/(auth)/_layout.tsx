@@ -4,7 +4,6 @@ import LoadingIndicator from "@/components/LoadingIndicator";
 import { TouchableOpacity, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-
 export default function AuthLayout() {
   const { session, isLoading } = useSession();
   const router = useRouter();
@@ -25,12 +24,22 @@ export default function AuthLayout() {
   // This layout can be deferred because it's not the root layout.
   return (
     <Stack
-    screenOptions={{ 
-      contentStyle: { backgroundColor: "white" },
-      headerShown: false,
-     }}>
+      screenOptions={{
+        contentStyle: { backgroundColor: "white" },
+        headerShadowVisible: false,
+        headerShown: false,
+        headerTitleAlign: "center"
+      }}
+    >
       {/* Renders everything inside of (tabs) using that _layout */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerShown: false,
+          // headerShadowVisible: false,
+          // contentStyle: { backgroundColor: "white" },
+        }}
+      />
 
       {/* <Stack.Group screenOptions={({navigation}) => ({
           ...TransitionPresets.ModalSlideFromBottomIOS,
@@ -40,27 +49,28 @@ export default function AuthLayout() {
 
         })}> */}
 
-     
-      
-      <Stack.Screen name="(modal)/create" options={{ 
-        presentation: "modal", // shows as model instead of new screen
-        headerTitleAlign: "center",
-        title: "Create Project",
-        headerShadowVisible: false,
-        headerRight: () => (
-          <TouchableOpacity>
-            <Ionicons name="ellipsis-horizontal-circle" size={24} />
-          </TouchableOpacity>
-        )
-       }} />
-       <Stack.Screen
+      <Stack.Screen
+        name="(modal)/create"
+        options={{
+          presentation: "modal", // shows as model instead of new screen
+          headerTitleAlign: "center",
+          title: "Create Project",
+          headerShadowVisible: false,
+          headerRight: () => (
+            <TouchableOpacity>
+              <Ionicons name="ellipsis-horizontal-circle" size={24} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
         name="(modal)/edit-profile"
         options={{
-          presentation: 'modal', // doesn't actually show modal window currently
+          presentation: "modal", // doesn't actually show modal window currently
           headerShown: true,
           headerTitleAlign: "center",
           headerShadowVisible: false,
-          title: 'Edit profile',
+          title: "Edit profile",
           headerLeft: () => (
             <TouchableOpacity onPress={() => router.back()}>
               <Text>Cancel</Text>

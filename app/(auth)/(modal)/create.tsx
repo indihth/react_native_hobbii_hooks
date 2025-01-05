@@ -15,7 +15,7 @@ const CreateProject = () => {
     craft_type: "",
     pattern: undefined, // expecting ObjectId, empty string is not valid
     yarns_used: {
-      yarn: undefined, // expecting ObjectId, empty string is not valid
+      yarn: undefined, 
       colorway_name: [""],
     },
     made_for: "",

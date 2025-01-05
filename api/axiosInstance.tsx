@@ -18,7 +18,7 @@ export const axiosAuthGet = (endpoint: string, token?: string | null) => {
     return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      return Promise.reject(error.response?.data || error.message);
+      return Promise.reject(error);
     } else {
       return Promise.reject(error);
     }
@@ -100,6 +100,18 @@ export const axiosDelete = (
   token?: string | null | undefined
 ) => {
   return axiosInstance.delete(endpoint, {
+    headers: {
+      // If token was passed, set auth header, otherwise leave undefined
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  });
+};
+
+export const axiosRestore = (
+  endpoint: string,
+  token?: string | null | undefined
+) => {
+  return axiosInstance.patch(endpoint, {
     headers: {
       // If token was passed, set auth header, otherwise leave undefined
       Authorization: token ? `Bearer ${token}` : undefined,

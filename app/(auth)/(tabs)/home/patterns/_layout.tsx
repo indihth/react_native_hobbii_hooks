@@ -6,14 +6,20 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 const Layout = () => {
   return (
     <Stack
-      screenOptions={{ headerShadowVisible: false, headerTitleAlign: "center" }}
+      screenOptions={{
+        headerShown: false,
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        contentStyle: { backgroundColor: "white" },
+      }}
     >
       <Stack.Screen
         name="index"
         options={{
           headerShown: true,
           title: "Archived Patterns",
-
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
           headerLeft: () => (
             <TouchableOpacity
               className="flex-row items-center"

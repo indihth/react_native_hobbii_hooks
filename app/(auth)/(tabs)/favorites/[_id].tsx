@@ -1,2 +1,14 @@
 // exporting entire Pattern page while maintaining file structure and navigation
-export { default } from '@/components/Pattern'
+import React from 'react';
+import { PathnameContext } from '@/contexts/PathnameContext';
+import Pattern from '@/components/Pattern';
+
+const PatternPage = () => {
+    return (
+        <PathnameContext.Provider value="favorites">
+            <Pattern />
+        </PathnameContext.Provider>
+    );
+};
+
+export default PatternPage;

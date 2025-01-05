@@ -39,9 +39,10 @@ export default function TabLayout() {
         headerTitleAlign: "center",
       }}
     >
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="feed"
         options={{
+          href: null,
           title: "Home",
           headerShown: false,
           tabBarIcon: ({ color, size, focused }) => (
@@ -52,23 +53,35 @@ export default function TabLayout() {
             />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
-        name="search"
+        name="home"
         options={{
-          title: "Search",
+          title: "Home",
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
-              name={focused ? "search" : "search-outline"}
+              name={focused ? "home" : "home-outline"}
               size={size}
               color={color}
             />
           ),
-          headerShown: false,
         }}
       />
-
       <Tabs.Screen
+        name="favorites"
+        options={{
+          title: "Favorites",
+          headerShown: false,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "heart" : "heart-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+       <Tabs.Screen
         name="create"
         options={{
           title: "Create",
@@ -88,20 +101,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="favorites"
-        options={{
-          title: "Favorites",
-          // headerShown: true,
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons
-              name={focused ? "heart" : "heart-outline"}
-              size={size}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
@@ -113,6 +112,26 @@ export default function TabLayout() {
               color={color}
             />
           ),
+        }}
+        listeners={{
+          tabPress: () => {
+            if (router.canDismiss()) {
+              router.dismissAll()
+            }
+          },
+        }}
+      />
+       <Tabs.Screen
+        name="logout"
+        options={{
+          title: "Create",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="log-out-outline" size={size} color={color}/>
+          ),
+        }}
+        // stops the icon from navigating to the create screen, allows for other actions
+        listeners={{
+          tabPress: () => signOut(),
         }}
       />
     </Tabs>

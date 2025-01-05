@@ -19,6 +19,7 @@ import { formatStatus } from "@/utils/formatStatus";
 import PatternCard from "./PatternCard";
 import ProjectCard from "./ProjectCard";
 import { PathnameContext } from "@/contexts/PathnameContext";
+import LoadingIndicator from "./LoadingIndicator";
 
 type ProfileProps = {
   userId?: string;
@@ -34,7 +35,7 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
 
   //   const [tabTitles, setTabTitles] = useState<string[]>();
   const isSelf = !userId || userId === authUserId;
-  
+
   const tabTitles = isSelf ? ["Patterns", "Projects"] : ["Patterns"];
   const [activeTab, setActiveTab] = useState<string>(tabTitles[0]);
 
@@ -45,16 +46,17 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     try {
       setLoading(true);
       if (isSelf) {
-      // if (userId === authUserId) {
+        // if (userId === authUserId) {
         // const response = await axiosAuthGet(`/users/${authUserId}`, session);
         fetchPatterns();
         fetchProjects();
-        console.log("auth user")
 
         // Handle the response data as needed
       } else {
-        console.log("not auth user")
-        const response = await axiosAuthGet(`/patterns?userId=${userId}`, session);
+        const response = await axiosAuthGet(
+          `/patterns?userId=${userId}`,
+          session
+        );
         setPatterns(response.data);
       }
     } catch (e) {
@@ -68,37 +70,34 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
     fetchData();
   }, [userId, authUserId]);
   // useEffect(() => {
-    const fetchPatterns = async () => {
-      try {
-        setLoading(true); // display loading text until api call is completed
-        const response = await axiosAuthGet("/patterns/favourites", session);
-        setPatterns(response.data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchProjects = async () => {
-      try {
-        setLoading(true); // display loading text until api call is completed
-        const response = await axiosAuthGet("/projects/my_projects", session);
-        setProjects(response.data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchPatterns = async () => {
+    try {
+      setLoading(true); // display loading text until api call is completed
+      const response = await axiosAuthGet("/patterns/my_patterns", session);
+      setPatterns(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchProjects = async () => {
+    try {
+      setLoading(true); // display loading text until api call is completed
+      const response = await axiosAuthGet("/projects/my_projects", session);
+      setProjects(response.data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    useFocusEffect(
-      useCallback(() => {
-        console.log(userId);
-        // fetchProjects();
-        // fetchPatterns();
-        fetchData();
-      }, [userId])
-    );
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [userId])
+  );
 
   const handleTabChange = (tab: any) => {
     setActiveTab(tab);
@@ -106,74 +105,52 @@ const Profile = ({ userId, showBackButton = false }: ProfileProps) => {
 
   const FlatListContent = ({ item }: { item: any }) => {
     return activeTab === "Patterns" ? (
-    <PathnameContext.Provider value="profile/patterns">
-      <PatternCard pattern={item} />
-    </PathnameContext.Provider>
+      <PathnameContext.Provider value="profile/patterns">
+        <PatternCard pattern={item} />
+      </PathnameContext.Provider>
     ) : (
       <ProjectCard project={item} />
     );
   };
 
   return (
-    <>
-      <View>
-        <FlatList
-          data={activeTab === "Patterns" ? patterns : projects}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <FlatListContent item={item} />}
-          keyExtractor={
-            activeTab === "Patterns"
-              ? (pattern: PatternTypeID) => pattern._id
-              : (project: ProjectTypeID) => project._id
-          }
-          ListEmptyComponent={<Text>Empty</Text>}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-          ListHeaderComponent={
-            <>
+    <View>
+      <FlatList
+        data={activeTab === "Patterns" ? patterns : projects}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <FlatListContent item={item} />}
+        keyExtractor={
+          activeTab === "Patterns"
+            ? (pattern: PatternTypeID) => pattern._id
+            : (project: ProjectTypeID) => project._id
+        }
+        ListEmptyComponent={loading ? <LoadingIndicator /> : <Text>Empty</Text>}
+        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+        ListHeaderComponent={
+          <>
+            {showBackButton ?? (
               <View style={styles.header}>
-                {showBackButton ? (
-                  <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => router.back()}
-                  >
-                    <Ionicons name="chevron-back" size={24} color="#000" />
-                    <Text style={styles.backText}>Back</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <Ionicons name="at-outline" size={24} color="black" />
-                )}
-                <View style={styles.headerIcons}>
-                  <Ionicons name="globe-outline" size={24} color="black" />
-                  <TouchableOpacity onPress={() => signOut()}>
-                    <Ionicons name="log-out-outline" size={24} color="black" />
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={() => router.back()}
+                >
+                  <Ionicons name="chevron-back" size={24} color="#000" />
+                  <Text style={styles.backText}>Back</Text>
+                </TouchableOpacity>
               </View>
+            )}
 
-              {/* Return either logged in user profile or view another users' profile */}
-              {userId ? (
-                <ProfileDetails userId={userId} />
-              ) : (
-                <ProfileDetails userId={authUserId} />
-              )}
-               <Tabs
-                  tabTitles={tabTitles}
-                  onTabChange={handleTabChange}
-                />
-              {/* {userId ? (
-                <Tabs
-                  tabTitles={tabTitlesOther}
-                  onTabChange={handleTabChange}
-                />
-              ) : (
-                <Tabs tabTitles={tabTitlesOwn} onTabChange={handleTabChange} />
-              )} */}
-            </>
-          }
-        />
-        {/* <Tabs tabTitles={tabTitles} onTabChange={handleTabChange} /> */}
-      </View>
-    </>
+            {/* Return either logged in user profile or view another users' profile */}
+            {userId ? (
+              <ProfileDetails userId={userId} />
+            ) : (
+              <ProfileDetails userId={authUserId} />
+            )}
+            <Tabs tabTitles={tabTitles} onTabChange={handleTabChange} />
+          </>
+        }
+      />
+    </View>
   );
 };
 
@@ -187,6 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
+    marginTop: 16,
   },
   headerIcons: {
     flexDirection: "row",
@@ -196,7 +174,6 @@ const styles = StyleSheet.create({
   tabContentText: {
     fontSize: 16,
     marginVertical: 16,
-    // color: Colors.border,
     alignSelf: "center",
   },
   backButton: {
